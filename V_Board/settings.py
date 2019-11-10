@@ -28,7 +28,7 @@ SECRET_KEY = 'h0!x4q+xj3$2$36zhp+so2qnuja)z7ttgs91-#99#uou8%p*&%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -80,7 +80,7 @@ WSGI_APPLICATION = 'V_Board.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "web",
+        'NAME': "v_board",
         'USER': "stranger",
         "PASSWORD":'123456',
         'HOST': 'localhost',
