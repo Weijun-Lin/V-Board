@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="zh-CN">
+	<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Login</title>
+        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css">
+        <link rel="stylesheet" href="{% static 'login.css' %}">
+		<style>
+			body {
+				background:url("{% static 'img/bg.jpg' %}")  no-repeat center center scroll;
+				background-size:cover;
+				background-attachment:fixed;
+			}
+		</style>
+	</head>
+    <body>
+        <div class="dowebok" id="dowebok">
+            <div class="form-container sign-up-container">
+                <form action="#" method="POST">
+                    {% csrf_token %}
+                    <h1>注册</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>或使用邮箱注册</span>
+                    <input type="text" name="name" placeholder="昵称" required>
+                    <input type="email" name="email" placeholder="电子邮箱" required>
+                    <input type="password" name="password" placeholder="密码" required>
+                    <!-- 添加错误信息 -->
+                    {% if reg_error|default:False %}
+                    <span style="color: firebrick;font-weight: bold;margin-bottom: 0.5rem;">
+                        邮箱已注册
+                    </span>
+                    {% endif %}
+                    <button name="signup" type="submit">注册</button>
+                </form>
+            </div>
+            <div class="form-container sign-in-container">
+                <form method="POST" action="#">
+                    {% csrf_token %}
+                    <h1>登录</h1>
+                    <div class="social-container">
+                        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+                        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                    <span>或使用您的帐号</span>
+                    <input type="email" name="email" placeholder="电子邮箱" required>
+                    <input type="password" name="password" placeholder="密码" required>
+                    <a href="#">忘记密码？</a>
+                    <!-- 提示错误信息 -->
+                    {% if login_error|default:False %}
+                    <span style="color: firebrick;font-weight: bold;margin-bottom: 0.8rem;">
+                        用户名或密码错误
+                    </span>
+                    {% endif %}
+                    <button type="submit" name="signin">登录</button>
+                </form>
+            </div>
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>已有帐号？</h1>
+                        <p>请使用您的帐号进行登录</p>
+                        <button class="ghost" id="signIn">登录</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>没有帐号？</h1>
+                        <p>立即注册加入我们，和我们一起开始旅程吧</p>
+                        <button class="ghost" id="signUp">注册</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="{% static 'login.js' %}"></script>
+        <!-- 用户注册失败后返回后自动跳转到注册页面 默认为登录界面 -->
+        <script>
+            var container = document.getElementById('dowebok')
+            // 如果注册失败自动切换到注册界面
+            {% if reg_error|default:False %}
+            container.classList.add('right-panel-active')
+            {% endif %} 
+            // 注册成功后提示相应信息
+            {% if alert|default:False %}
+            alert("注册成功 请重新登陆")
+            {% endif %}
+        </script>
+    </body>
+</html>

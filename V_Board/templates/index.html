@@ -1,8 +1,6 @@
-{% load static %}
-
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
-
 <head>
 
   <meta charset="utf-8">
@@ -59,7 +57,7 @@
       <h3 class="mb-5">
         <em>One-Stop Management Collaboration Platform</em>
       </h3>
-	  <a class="btn btn-primary btn-xl js-scroll-trigger m-2" href="#">Login & Register</a>
+	  <a class="btn btn-primary btn-xl js-scroll-trigger m-2" href="{% url 'login:login' %}">Login & Register</a>
       <a class="btn btn-primary btn-xl js-scroll-trigger m-2" href="#about">Find Out More</a>
     </div>
     <div class="overlay"></div>
@@ -132,7 +130,7 @@
       <h2 class="mx-auto mb-5">Welcome to
         <em>your</em>
         Own Account</h2>
-      <a class="btn btn-primary btn-xl" href="#">Login & Register Now!</a>
+      <a class="btn btn-primary btn-xl" href="{% url 'login:login' %}">Login & Register Now!</a>
     </div>
   </section>
   

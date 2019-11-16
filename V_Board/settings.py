@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'V_Board',
+    'login',
 ]
 
 MIDDLEWARE = [
@@ -82,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "v_board",
         'USER': "stranger",
-        "PASSWORD":'123456',
+        "PASSWORD":'***',
         'HOST': 'localhost',
         'PORT': '3306',
     }

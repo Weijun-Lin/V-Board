@@ -63,7 +63,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "v-board",
         'USER': "stranger",
-        "PASSWORD":'123456',
+        "PASSWORD":'*..*',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -85,3 +85,63 @@ DATABASES = {
 #### 服务器搭建
 
 服务器为阿里CentOs 7, python 环境 3.7，数据库为默认 *MariaDB*  (MySQL的子集)
+
+### 2019-11-16
+
+> 实现登陆注册模块
+
+#### 前端页面设置
+
+项目登陆注册页面使用网上的模板
+
+模板地址： http://www.dmaku.com/demo-moban-2071.html 
+
+在此模板基础上添加相应的响应事件以及更改样式
+
+#### 数据库表配置
+
+> 项目未使用 Django 自带的模型，实现原生SQL实现数据库操作
+
+- usr_info表：保存用户的个人信息等
+
+	```sql
+	CREATE TABLE `usr_login` (
+		`email` VARCHAR(50) NOT NULL,
+		`password` VARCHAR(100) NOT NULL,
+		`UID` INT(11) UNSIGNED NOT NULL,
+		PRIMARY KEY (`email`),
+		INDEX `FK__memberinfo` (`UID`),
+		CONSTRAINT `FK__memberinfo` FOREIGN KEY (`UID`) REFERENCES `usr_info` (`UID`)
+	)
+	COMMENT='用户登录信息'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	;
+	```
+
+- usr_login表：用户登录信息
+
+	```sql
+	CREATE TABLE `usr_info` (
+		`UID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '唯一编号',
+		`name` VARCHAR(50) NOT NULL COMMENT '用户名',
+		`avatar` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '头像路径',
+		`description` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '自我描述',
+		PRIMARY KEY (`UID`)
+	)
+	COMMENT='保存用户的个人信息等'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	AUTO_INCREMENT=1
+	;
+	```
+
+#### 保持登录状态实现
+
+需要实现用户登录后保持登录状态，HTTP是无状态协议，所以需要使用Django的Session（会话）功能实现
+
+参考： http://www.liujiangblog.com/course/django/111 
+
+#### 后端逻辑代码
+
+新建APP：login实现登录注册功能
