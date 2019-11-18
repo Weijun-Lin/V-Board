@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'V_Board',
     'login',
+	'home',
 ]
 
 MIDDLEWARE = [
