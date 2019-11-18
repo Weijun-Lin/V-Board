@@ -34,4 +34,6 @@ def logout(request):
     return redirect(reverse('login:login'))
 
 def home(request):
+	if not request.session.get('is_login'):
+		return redirect(reverse('login:login'))
     return render(request, 'home.html')
