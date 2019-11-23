@@ -1,4 +1,3 @@
-# Create your views here.
 from django.shortcuts import render, redirect, reverse
 from django.http import *
 import models
@@ -6,7 +5,7 @@ import models
 def login(request: HttpRequest):
     # 如果已经登陆过直接跳转到用户主页面
     if request.session.get('is_login'):
-        return redirect(reverse("home"))
+        return redirect(reverse("home:home"))
 
     if request.method == "GET":
         return render(request, 'login.html')
@@ -18,7 +17,7 @@ def login(request: HttpRequest):
             if models.Usr_Login.isLegal(email, password):
                 request.session['is_login'] = True
                 request.session['email'] = email
-                return redirect(reverse("home"))
+                return redirect(reverse("home:home"))
             else:
                 return render(request, 'login.html', context={"login_error":True})
         # Register
@@ -32,8 +31,3 @@ def login(request: HttpRequest):
 def logout(request):
     request.session.flush()
     return redirect(reverse('login:login'))
-
-def home(request):
-	if not request.session.get('is_login'):
-		return redirect(reverse('login:login'))
-    return render(request, 'home.html')

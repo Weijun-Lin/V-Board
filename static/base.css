@@ -1,0 +1,27 @@
+body {
+    margin-top: 4.5rem;
+}
+.navbar {
+    background-color: #563d7c;
+    min-height: 3.5rem;
+}
+
+.navbar_board {
+    max-height: 34rem; 
+    overflow-y: auto;
+}
+
+.avatar {
+    width: 2.5rem; 
+    height: 2.5rem;
+    cursor:pointer;
+}
+
+.team_member_label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    width:4rem;
+    max-width:11rem;
+    background-color:rgb(232, 240, 254);
+}

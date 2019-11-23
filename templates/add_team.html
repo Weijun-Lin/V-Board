@@ -1,0 +1,39 @@
+<!-- 添加团队模态框 -->
+<div class="modal fade" id="add_team_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered" role="document" style="">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">构建团队</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="form_add_team" onkeydown="if(event.keyCode==13){return false;}">
+                    {% csrf_token %}
+                    <div class="form-group my-1">
+                        <label for="add_team_nick_name" class="col-form-label">团队名字</label>
+                        <input type="text" class="form-control form-control-sm" id="add_team_nick_name">
+                    </div>
+                    <div class="form-group my-1">
+                        <label for="add_team_desc" class="col-form-label">团队介绍</label>
+                        <textarea class="form-control form-control-sm" id="add_team_desc" style="width: 100%;height: 10rem;"></textarea>
+                    </div>
+                    <div class="form-group my-1">
+                        <label class="col-form-label">团队成员</label>
+                        <div class="container">
+                            <div class="row" id="teammates">
+                                <!-- 成员邮箱 -->
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-outline-success btn-sm" id="add_team_member">添加成员</button>
+                <button type="button" class="btn btn-outline-success btn-sm" id="submit_team_set">创建团队</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<!-- 主页上的看板预览块 -->
+<h5 class="font-weight-bold"><span class="icon-{{boards.icon}} m-2"></span>{{boards.name}}</h5>
+<div class="container m-0">
+    <div class="row">
+        {% for board in boards.items %}
+        <div class="d-flex justify-content-between border p-2 rounded-lg m-2 v_card">
+                <h6 class="font-weight-bold">{{board.name}}</h6>
+                <div class="d-flex justify-content-between">
+                    <h7>{{board.belong}}</h7>
+                    <button class="icon-star border-0 transparent
+                    {% if board.starred is True %}
+                    starred
+                    {% else %}
+                    unstarred
+                    {% endif %}" style="outline:none;"></button>
+                </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>

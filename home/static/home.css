@@ -1,0 +1,18 @@
+.v_card {
+    height: 6rem;
+    width: 10rem;
+    flex-direction:column;
+    cursor:pointer;
+}
+
+.transparent {
+    background-color: transparent;
+}
+
+.starred {
+    color: rgb(255, 193, 7);
+}
+
+.unstarred {
+    color: black;
+}
