@@ -17,6 +17,9 @@ def login(request: HttpRequest):
             if models.Usr_Login.isLegal(email, password):
                 request.session['is_login'] = True
                 request.session['email'] = email
+                # 获取 UID 保存起来方便使用
+                request.session['uid'] = models.Usr_Login.getRecordByKey(email)[models.Usr_Login.uid]
+                print(request.session['uid'])
                 return redirect(reverse("home:home"))
             else:
                 return render(request, 'login.html', context={"login_error":True})

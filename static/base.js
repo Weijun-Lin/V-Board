@@ -1,3 +1,26 @@
+// ----------------------------- CSRF For Ajax -------------------------------
+// reference http://www.codingsoho.com/zh/blog/django-csrf/
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
 // ---------------------------------JS For add_team.html-------------------------------------
 $('#add_team_desc').keydown(function (e) {
     e.stopPropagation();
@@ -65,9 +88,37 @@ $("#submit_usr_set").click(function () {
     $("#userSetModal").modal('hide');
 });
 
-$("#form_change_avatar").find("img").click(function () {
+$("#button_avatar").click(function () {
     $("#form_change_avatar").find("input").click();
-    $("#form_change_avatar").find("input").change(function(){
-        console.log(console.log($(this)[0].files));
+    $("#form_change_avatar").find("input").change(function(){    
+        // 点了取消选择文件
+        if($(this).val() == '') {
+            return;
+        }
+        var formData = new FormData();
+        formData.append('avatar', $(this)[0].files[0]);
+        $.ajax({
+            type: "POST",
+            url: "/home/set_avatar/",
+            data: formData,
+            contentType: false,
+            clearForm: true,
+            processData: false,
+            dataType: "text",
+            beforeSend: function (xhr, settings) {
+                var csrftoken = getCookie('csrftoken'); 
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            },
+            success: function (data, status) {
+                $(".avatar").attr('src', data);
+                // 重新置为空字符串
+                $(this).val('');
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("上传图片失败")
+            }
+        });
     })
 })

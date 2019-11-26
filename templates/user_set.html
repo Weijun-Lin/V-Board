@@ -4,14 +4,14 @@
     <div class="modal-dialog modal-dialog-centered" role="document" style="width:30%;">
         <div class="modal-content">
             <div class="modal-header">
-                <form enctype="multipart/form-data" method="POST" action="" id="form_change_avatar">
+                <form enctype="multipart/form-data" id="form_change_avatar" style="display: none;">
                     {% csrf_token %}
-                    <input type="file" style="display: none;">
-                    <div class="d-flex justify-content-center" style="width: 100%;">
-                        <img class="img-fluid rounded-circle ml-2 avatar" src="/media/avatar.jpg" alt="avatar" title="更改头像">
-                        <h5 class="modal-title">个人设置</h5>
-                    </div>
+                    <input type="file" accept="image/*" name="file_avatar" style="display: none;">
                 </form>
+                <div class="d-flex justify-content-center" style="width: 100%;">
+                    <img class="img-fluid rounded-circle ml-2 avatar" src="{{avatar_path}}" alt="avatar" title="更改头像" id="button_avatar">
+                    <h5 class="modal-title mt-1 ml-2">个人设置</h5>
+                </div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group my-1">
                         <label for="use_set_desc" class="col-form-label">个人介绍</label>
-                        <textarea class="form-control form-control-sm" id="use_set_desc"></textarea>
+                        <textarea class="form-control form-control-sm" id="use_set_desc" placeholder="介绍你自己吧"></textarea>
                     </div>
                     <div class="form-group my-1">
                         <label for="user_set_srcpass" class="col-form-label">原始密码</label>

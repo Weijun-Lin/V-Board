@@ -49,7 +49,7 @@
         <ul class="navbar-nav">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown">
-                    <img class="img-fluid rounded-circle ml-2 avatar" src="/media/avatar.jpg">
+                    <img class="img-fluid rounded-circle ml-2 avatar" src="{{avatar_path}}">
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item disabled" href="">{{user_name}}</a>
@@ -63,7 +63,7 @@
     </div>
 </nav>
 
-{% include 'user_set.html' with user_name=user_name %}
+{% include 'user_set.html' with user_name=user_name avatar_path=avatar_path %}
 {% include 'add_board.html' %}
 {% include 'add_team.html' %}
 

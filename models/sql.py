@@ -1,8 +1,17 @@
+"""
+    @Desc:
+        SQL语言的基础包装
+    @Func:
+        sql_select
+        sql_insert
+        sql
+        getDataAsDict
+"""
+
 from django.db import connection
 
-# 使用原生SQL
 
-def sql_select(tables, attr="*", cond="", addition="")->dict:
+def sql_select(tables, attr="*", cond="", addition="")->list:
     """ select attr from tables where cond addition """
     if len(cond) == 0:
         return sql("select {} from {} {}".format(attr, tables, addition))
@@ -15,7 +24,28 @@ def sql_insert(table, values, key):
     return sql("insert into {} ({}) values ({})".format(table, key, values))
 
 
-def sql(code)->dict:
+def sql_update(table, cond, **kwargs):
+    """  
+        @Desc:
+            UPDATE table_name SET field1=new-value1, field2=new-value2 [WHERE Clause]
+        @Param:
+            table: table name
+            kwargs: the key-value of field-value
+    """
+    code = "update {} set ".format(table)
+    length = len(kwargs)
+    i = 0
+    for field, value in kwargs.items():
+        code += " {}='{}' ".format(field, value)
+        if i != length-1:
+            code += ','
+        i += 1
+    code += "where {}".format(cond)
+    sql(code)
+
+
+def sql(code)->list:
+    """ 执行原始SQL代码 """
     print("code:", code)
     cursor = connection.cursor()
     print(cursor)
@@ -23,8 +53,8 @@ def sql(code)->dict:
     return getDataAsDict(cursor)
 
 
-def getDataAsDict(cursor)->dict:
-
+def getDataAsDict(cursor)->list:
+    """ 将表信息包装成列表字典  """
     rows = cursor.fetchall()
     if cursor.description == None:
         return {}
