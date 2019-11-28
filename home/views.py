@@ -12,26 +12,20 @@ def home(request:HttpRequest):
     team1 = {"items":[{"name":"团队1", "starred": True}, {"name":"团队2", "starred": False}], "name":"团队1", "icon":"people"}
     team2 = {"items":[{"name":"团队1", "starred": True}, {"name":"团队2", "starred": False}], "name":"团队2", "icon":"people"}
     teams_boards = [team1, team2]
-    user_name = "Joke-Lin"
+    # 获取用户信息
+    login_info = models.Usr_Login.getRecordByKey(request.session["email"])
+    user_info = models.Usr_Info.getRecordByKey(request.session["uid"])
+    # 获取用户名
+    user_name = user_info[models.Usr_Info.name]
+    # 获取头像
     avatar_path = models.Usr_Info.getRecordByKey(request.session["uid"])[models.Usr_Info.avatar]
+    # 没有设置就为默认头像
     if len(avatar_path) == 0:
         avatar_path = "/media/avatar/default.jpg"
+    # 获取用户个人介绍
+    user_desc = user_info[models.Usr_Info.description]
+
+    
     return render(request, 'home.html', context=locals(), )
-
-
-def setAvatar(request:HttpRequest):
-    if request.method == "POST":
-        avatar = request.FILES.get("avatar", None)
-        if not avatar:
-            return HttpResponse("error")
-
-        avatar_path = open(os.path.join(settings.BASE_DIR, 'media', 'avatar', request.session['email']+".jpg"), "wb+")
-        for chunk in avatar.chunks():      # 分块写入文件
-            avatar_path.write(chunk)
-        avatar_path.close()
-
-        avatar_path = "/media/avatar/{}.jpg".format(request.session['email'])
-        models.Usr_Info.update(request.session["uid"], "Joke-Lin", avatar_path ,"")
-        return HttpResponse(avatar_path)
         
         

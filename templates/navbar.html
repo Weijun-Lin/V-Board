@@ -56,14 +56,14 @@
                     <a class="dropdown-item" href="" data-toggle="modal" data-target="#userSetModal">设置</a>
                     
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'logout' %}">登出</a>
+                    <a class="dropdown-item" href="{% url 'logout' %}" id="logout">登出</a>
                 </div>
             </li>
         </ul>
     </div>
 </nav>
 
-{% include 'user_set.html' with user_name=user_name avatar_path=avatar_path %}
+{% include 'user_set.html' with user_name=user_name avatar_path=avatar_path user_desc=user_desc %}
 {% include 'add_board.html' %}
 {% include 'add_team.html' %}
 

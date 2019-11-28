@@ -54,6 +54,10 @@ class Usr_Login:
             print(uid)
             Usr_Login.insert(_email, uid, _password)
             return True
+    
+    @staticmethod
+    def changePassword(_email, _newpassword):
+        sql_update(Usr_Login.table_name, "{}='{}'".format(Usr_Login.email, _email), **{Usr_Login.password:_newpassword})
 
 
 class Usr_Info:

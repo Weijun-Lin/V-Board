@@ -1,5 +1,9 @@
+html {
+    overflow-y: hidden;
+}
+
 body {
-    margin-top: 4.5rem;
+    margin-top: 4.5rem; /*保证导航栏不遮挡东西*/
 }
 .navbar {
     background-color: #563d7c;

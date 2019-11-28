@@ -6,5 +6,4 @@ app_name = 'home'
 
 urlpatterns = [
     path('', home, name="home"),
-    path('set_avatar/', setAvatar, name="set_avatar"),
 ]

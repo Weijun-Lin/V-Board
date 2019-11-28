@@ -27,7 +27,7 @@ $('#add_team_desc').keydown(function (e) {
 })
 $("#submit_team_set").click(function () {
     // $("#form_usr_set").submit(); 暂时没有后端处理代码
-    $("#add_team_modal").modal('hide');
+    // $("#add_team_modal").modal('hide');
 });
  
 //propertychange监听input里面的字符变化,属性改变事件
@@ -83,11 +83,8 @@ $("#add_team_member").click(function () {
 })
 
 // ------------------------ JS For user_set.html --------------------------------
-// 按钮（图片）点击产出文件选择框
-$("#submit_usr_set").click(function () {
-    $("#userSetModal").modal('hide');
-});
 
+// 按钮（图片）点击产出文件选择框
 $("#button_avatar").click(function () {
     $("#form_change_avatar").find("input").click();
     $("#form_change_avatar").find("input").change(function(){    
@@ -99,7 +96,7 @@ $("#button_avatar").click(function () {
         formData.append('avatar', $(this)[0].files[0]);
         $.ajax({
             type: "POST",
-            url: "/home/set_avatar/",
+            url: "/set_avatar/",
             data: formData,
             contentType: false,
             clearForm: true,
@@ -116,9 +113,97 @@ $("#button_avatar").click(function () {
                 // 重新置为空字符串
                 $(this).val('');
             },
-            error: function (XMLHttpRequest, textStatus, errorThrown) {
+            error: function () {
                 alert("上传图片失败")
             }
         });
     })
+})
+
+// 上传自我介绍 昵称 密码等
+$("#submit_usr_set").click(function () { 
+    
+    data = {
+        nickname: $("#user_set_nick_name").val(),
+        desc: $("#use_set_desc").val(),
+        srcpass: $("#user_set_srcpass").val(),
+        newpass: $("#user_set_newpass").val(),
+        repass:  $("#user_set_repass").val(),
+    };
+
+    $.ajax({
+        type: "POST",
+        url: "/user_set/",
+        dataType: "text",
+        data: JSON.stringify(data),
+        clearForm: true,
+        beforeSend: function (xhr, settings) {
+            var csrftoken = getCookie('csrftoken'); 
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        success: function(data) {
+            data = JSON.parse(data);
+            status = data.status;
+            console.log(data)
+            console.log(status)
+            if(status == 0) {
+                alert("密码修改成功 请重新登陆");
+                $("#logout")[0].click();    // 登出重新登陆
+            }
+            else if(status == 1) {
+                alert("密码错误 请重新输入原密码");
+            }
+            else if(status == 2) {
+                alert("非法密码 请确认新密码");
+            }
+            else if(status == 3) {
+                alert("密码不一致 请重新输入");
+            }
+            else if(status == 4) {
+                // 不是修改密码
+            }
+        },
+        error: function () {
+            alert("创建失败");
+        }
+    });
+    
+})
+
+
+// ------------------------------------- JS For Add_Board.html ------------------------
+$("#submit_board").click(function () {
+    if($("#add_board").find("[name=title]").val() == '') {
+        alert("标题不能为空");
+        return
+    }
+    data = {
+        title: $("#add_board").find("[name=title]").val(), 
+        type: $("#add_board").find("select").val(),
+        ispublic: $("#add_board_Switch").prop("checked")
+    };
+    $.ajax({
+        type: "POST",
+        url: "/add_board/",
+        dataType: "text",
+        data: JSON.stringify(data),
+        clearForm: true,
+        beforeSend: function (xhr, settings) {
+            var csrftoken = getCookie('csrftoken'); 
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        },
+        success: function(data) {
+            alert("上传成功");
+            // 清空表单
+            $("#form_add_board")[0].reset();
+
+        },
+        error: function () {
+            alert("创建失败");
+        }
+    });
 })
