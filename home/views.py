@@ -13,17 +13,17 @@ def home(request:HttpRequest):
     team2 = {"items":[{"name":"团队1", "starred": True}, {"name":"团队2", "starred": False}], "name":"团队2", "icon":"people"}
     teams_boards = [team1, team2]
     # 获取用户信息
-    login_info = models.Usr_Login.getRecordByKey(request.session["email"])
-    user_info = models.Usr_Info.getRecordByKey(request.session["uid"])
+    login_info = models.User_Login.getRecordByKey(request.session["email"])
+    user_info = models.User_Info.getRecordByKey(request.session["uid"])
     # 获取用户名
-    user_name = user_info[models.Usr_Info.name]
+    user_name = user_info[models.User_Info.name]
     # 获取头像
-    avatar_path = models.Usr_Info.getRecordByKey(request.session["uid"])[models.Usr_Info.avatar]
+    avatar_path = models.User_Info.getRecordByKey(request.session["uid"])[models.User_Info.avatar]
     # 没有设置就为默认头像
     if len(avatar_path) == 0:
         avatar_path = "/media/avatar/default.jpg"
     # 获取用户个人介绍
-    user_desc = user_info[models.Usr_Info.description]
+    user_desc = user_info[models.User_Info.description]
 
     
     return render(request, 'home.html', context=locals(), )

@@ -2,6 +2,7 @@
     @Desc:
         SQL语言的基础包装
     @Func:
+        getTupleByKey
         sql_select
         sql_insert
         sql
@@ -9,6 +10,18 @@
 """
 
 from django.db import connection
+
+def getTupleByKey(_table:str, _key:list, _value:list)->dict:
+    """ get record by key or a=1 b=1... this format condition """
+    cond = ""
+    for i in range(len(_key)):
+        cond += " {}='{}' ".format(_key[i], _value[i])
+        if i < len(_key) - 1:
+            cond += ' and '
+    res = sql_select(_table, "*", cond)
+    if len(res) == 0:
+        return {}
+    return res[0]
 
 
 def sql_select(tables, attr="*", cond="", addition="")->list:

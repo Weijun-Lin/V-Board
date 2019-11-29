@@ -29,6 +29,8 @@ urlpatterns = [
     path('set_avatar/', setAvatar),
     path('add_board/', addBoard),
     path('user_set/', userSet),
+    path('add_team/', addTeam),
+    path('get_usrinfo/', getUsrInfo),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

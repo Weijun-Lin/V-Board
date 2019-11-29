@@ -1,70 +1,74 @@
+"""
+    @Name: 
+        user.py
+    @Desc:
+        this file is used to do sql operations about users
+    @Class:
+        User_Login: table of users login information
+        User_Info: table of users themselves information
+"""
+
 from django.db import connection
 from .sql import *
 
-def getTupleByKey(_table:str, _key:str, _value)->dict:
-    res = sql_select(_table, "*", "{}='{}'".format(_key, _value))
-    if len(res) == 0:
-        return {}
-    return res[0]
 
-
-class Usr_Login:
+class User_Login:
     """
     用户登录表
     """
-    table_name = "usr_login"
+    table_name = "user_login"
     email = "email" # primary key
     uid = "UID"
     password = "password"
 
     @staticmethod
     def show():
-        return str(sql("desc {}".format(Usr_Login.table_name)))
+        return str(sql("desc {}".format(User_Login.table_name)))
 
     @staticmethod
     def getRecordByKey(_email):
-        return getTupleByKey(Usr_Login.table_name, Usr_Login.email, _email)
+        return getTupleByKey(User_Login.table_name, [User_Login.email], [_email])
 
     @staticmethod
     def insert(_email, _uid, _password):
-        key = "{}, {}, {}".format(Usr_Login.email, Usr_Login.uid, Usr_Login.password)
+        key = "{}, {}, {}".format(User_Login.email, User_Login.uid, User_Login.password)
         values = "'{}', {}, '{}'".format(_email, _uid, _password)
-        sql_insert(Usr_Login.table_name, values, key)
+        sql_insert(User_Login.table_name, values, key)
 
     @staticmethod
     def isLegal(_email: str, _password: str) -> bool:
         """
         判断是否是合法账号密码
         """
-        record = Usr_Login.getRecordByKey(_email)
+        record = User_Login.getRecordByKey(_email)
         if record == {}:
             return False
         else:
-            return record[Usr_Login.password] == _password
+            return record[User_Login.password] == _password
 
     @staticmethod
     def register(_name, _email, _password)->bool:
         """ 如果存在已注册账号返回 False 否则返回 True """
-        if len(Usr_Login.getRecordByKey(_email)) != 0:
+        if len(User_Login.getRecordByKey(_email)) != 0:
             return False
         else:
             # insert into usr_info
-            Usr_Info.insert(_name)
-            uid = sql_select(Usr_Info.table_name)[-1][Usr_Info.uid]
+            User_Info.insert(_name)
+            uid = sql_select(User_Info.table_name)[-1][User_Info.uid]
             print(uid)
-            Usr_Login.insert(_email, uid, _password)
+            User_Login.insert(_email, uid, _password)
             return True
     
     @staticmethod
     def changePassword(_email, _newpassword):
-        sql_update(Usr_Login.table_name, "{}='{}'".format(Usr_Login.email, _email), **{Usr_Login.password:_newpassword})
+        sql_update(User_Login.table_name, "{}='{}'".format(User_Login.email, _email), **{User_Login.password:_newpassword})
 
 
-class Usr_Info:
+class User_Info:
     """
     用户信息表
     """
-    table_name = "usr_info"
+    table_name = "user_info"
     uid = "UID" # primary key
     avatar = "avatar"
     name = "name"
@@ -72,19 +76,19 @@ class Usr_Info:
 
     @staticmethod
     def show():
-        return str(sql("desc {}".format((Usr_Info.table_name))))
+        return str(sql("desc {}".format((User_Info.table_name))))
 
     @staticmethod
     def getRecordByKey(_uid):
-        return getTupleByKey(Usr_Info.table_name, Usr_Info.uid, _uid)        
+        return getTupleByKey(User_Info.table_name, [User_Info.uid], [_uid])
 
     @staticmethod
     def insert(_name, _avatar='', _description=''):
-        key = "{}, {}, {}".format(Usr_Info.name, Usr_Info.avatar, Usr_Info.description)
+        key = "{}, {}, {}".format(User_Info.name, User_Info.avatar, User_Info.description)
         values = "'{}', '{}', '{}'".format(_name, _avatar, _description)
-        sql_insert(Usr_Info.table_name, values, key)
+        sql_insert(User_Info.table_name, values, key)
 
     @staticmethod
     def update(_uid, _name, _avatar, _desc):
-        key_value = {Usr_Info.name:_name, Usr_Info.avatar:_avatar, Usr_Info.description:_desc}
-        sql_update(Usr_Info.table_name, "{}='{}'".format(Usr_Info.uid, _uid), **key_value)
+        key_value = {User_Info.name:_name, User_Info.avatar:_avatar, User_Info.description:_desc}
+        sql_update(User_Info.table_name, "{}='{}'".format(User_Info.uid, _uid), **key_value)

@@ -10,6 +10,7 @@
                 </button>
             </div>
             <div class="modal-body">
+                <!-- 禁止表单原有的回车提交事件 -->
                 <form action="" method="POST" id="form_add_team" onkeydown="if(event.keyCode==13){return false;}">
                     {% csrf_token %}
                     <div class="form-group my-1">

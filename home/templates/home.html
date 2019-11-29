@@ -11,7 +11,7 @@
 {% endblock title %}
 
 {% block content %}
-<div class="d-flex flex-column p-2 mx-4">
+<div class="d-flex flex-column p-2 home_body">
     {% include 'board_cards.html' with boards=person_boards %}
     <br>
     {% for team_boards in teams_boards %}
