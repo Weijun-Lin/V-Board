@@ -1,0 +1,37 @@
+.v_card {
+    height: 6rem;
+    width: 10rem;
+    flex-direction:column;
+    cursor:pointer;
+}
+
+/* 溢出时显示... */
+.v_card h6 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.transparent {
+    background-color: transparent;
+}
+
+.starred {
+    color: rgb(255, 193, 7);
+}
+
+.unstarred {
+    color: black;
+}
+
+.home_body {
+    width: 60%;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.autoscroll{
+    overflow-y :auto;
+    /* overflow: hidden; */
+    /* overflow-y:scroll; */
+}

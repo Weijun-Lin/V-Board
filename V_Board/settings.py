@@ -18,7 +18,6 @@ pymysql.install_as_MySQLdb()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'V_Board',
     'login',
+	'home',
 ]
 
 MIDDLEWARE = [
@@ -83,7 +83,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': "v_board",
         'USER': "stranger",
-        "PASSWORD":'***',
+        "PASSWORD":'123456',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -130,3 +130,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # 全局静态文件位置
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# 媒体文件配置 用户上传文件配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

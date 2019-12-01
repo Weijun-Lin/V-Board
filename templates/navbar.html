@@ -1,0 +1,69 @@
+<!-- 继承自 base.html 导航栏-->
+{% extends "base.html" %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top px-2 py-0">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
+        aria-controls="navbarTogglerDemo03" aria-expanded="true" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand font-weight-bold" href="">V-Border</a>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'home:home'%}">首页</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    看板
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="d-flex flex-column navbar_board">
+                        <a class="dropdown-item" href="">预留</a>
+                    </div>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    添加
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#add_board">添加看板</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#add_team_modal">添加团队</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text icon-magnifier"></span>
+                </div>
+                <input type="text" class="form-control" placeholder="Search" aria-label="Username"
+                    aria-describedby="basic-addon1">
+            </div>
+        </form>
+        <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown">
+                    <img class="img-fluid rounded-circle ml-2 avatar" src="{{avatar_path}}">
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item disabled" href="">{{user_name}}</a>
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#userSetModal"><span class="icon-settings pr-2"></span>设置</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}" id="logout"><span class="icon-logout pr-2"></span>登出</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+{% include 'user_set.html' with user_name=user_name avatar_path=avatar_path user_desc=user_desc %}
+{% include 'add_board.html' with teams=teams_boards%}
+{% include 'add_team.html' %}
+
+{% endblock navbar %}

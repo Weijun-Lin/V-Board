@@ -1,0 +1,52 @@
+<!-- 用户设置模态框 -->
+<div class="modal fade" id="userSetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="width:30%;">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <form enctype="multipart/form-data" id="form_change_avatar" style="display: none;">
+                    {% csrf_token %}
+                    <input type="file" accept="image/*" name="file_avatar" style="display: none;">
+                </form>
+                <div class="d-flex justify-content-center" style="width: 100%;">
+                    <img class="img-fluid rounded-circle ml-2 avatar" src="{{avatar_path}}" alt="avatar" title="更改头像" id="button_avatar">
+                    <h5 class="modal-title mt-1 ml-2">个人设置</h5>
+                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body py-2">
+                <form id="form_usr_set">
+                    {% csrf_token %}
+                    <div class="form-group my-1">
+                        <label for="user_set_nick_name" class="col-form-label">昵称</label>
+                        <input type="text" class="form-control form-control-sm" id="user_set_nick_name" value="{{user_name}}">
+                    </div>
+                    <div class="form-group my-1">
+                        <label for="use_set_desc" class="col-form-label">个人介绍</label>
+                        <textarea class="form-control form-control-sm" id="use_set_desc" placeholder="介绍你自己吧" style="height: 5.5rem;">{{user_desc}}</textarea>
+                    </div>
+                    <div class="collapse" id="collapsePassword">
+                        <div class="form-group my-1">
+                            <label for="user_set_srcpass" class="col-form-label">原密码</label>
+                            <input type="password" class="form-control form-control-sm" id="user_set_srcpass">
+                        </div>
+                        <div class="form-group my-1">
+                            <label for="user_set_newpass" class="col-form-label">新密码</label>
+                            <input type="password" class="form-control form-control-sm" id="user_set_newpass">
+                        </div>
+                        <div class="form-group my-1">
+                            <label for="user_set_repass" class="col-form-label">重复新密码</label>
+                            <input type="password" class="form-control form-control-sm" id="user_set_repass">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="collapse" data-target="#collapsePassword">修改密码</button>
+                <button type="button" class="btn btn-outline-success btn-sm" id="submit_usr_set">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
