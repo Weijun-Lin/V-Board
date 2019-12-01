@@ -1,0 +1,41 @@
+body {
+    margin-top: 4.5rem; /*保证导航栏不遮挡东西*/
+}
+.navbar {
+    background-color: #563d7c;
+    min-height: 3.5rem;
+}
+
+.navbar_board {
+    max-height: 34rem; 
+    overflow-y: auto;
+}
+
+.avatar {
+    width: 2.5rem; 
+    height: 2.5rem;
+    cursor:pointer;
+}
+
+
+.ellipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 添加团队成员 */
+.team_member_label {
+    width:4rem;
+    max-width:11rem;
+    background-color:rgb(232, 240, 254);
+}
+
+.team_title {
+    max-width: 10rem;
+}
+
+/* 显示成员下拉 */
+.team_member_list {
+    max-width:8rem;
+}
