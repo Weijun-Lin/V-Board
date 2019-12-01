@@ -32,18 +32,37 @@ def setAvatar(request:HttpRequest):
 def addBoard(request:HttpRequest):
     if request.method == "POST":
         data = json.loads(request.body)
-        print("body:")
-        print(request.body)
-        print("data:")
-        print(data)
-        print(request.POST.items())
-        return HttpResponse("OK")
+        response = {}
+        # 状态码 status: 0 success ; 1 empty title; 2 illegal title;
+        status = 0
+        name = data["title"]
+        kind = int(data["type"])
+        is_public = data["ispublic"]
+
+        if name == "":
+            status = 1
+        else:
+            # 向个人或者团队中插入数据
+            board_kind = models.Person_Board if kind == 0 else models.Team_Board
+            ownerid = request.session["uid"] if kind == 0 else kind
+            boards = models.Board.getBoardsByOwner(board_kind, ownerid)
+            for board in boards:
+                if board[board_kind.name] == name:
+                    status = 2
+                    break
+            if status != 2:
+                models.Board.insert(board_kind, name, '', ownerid, is_public)
+                print(models.Board.getLastByBid(board_kind))
+                response = {**response, **models.Board.getLastByBid(board_kind)}
+                response["type"] = kind
+
+        response["status"] = status
+        return JsonResponse(response)
 
 
 def userSet(request:HttpRequest):
     if request.method == "POST":
-        data = json.loads(request.body)     
-        print(data)
+        data = json.loads(request.body)
         reponse = {}    # 返回的字典
         # 获取记录
         login_info = models.User_Login.getRecordByKey(request.session["email"])
@@ -75,10 +94,97 @@ def userSet(request:HttpRequest):
 def addTeam(request:HttpRequest):
     if request.method == 'POST':
         data = json.loads(request.body)
+        # 状态码 status: 0 success ; 1 empty title; 2 illegal title; 3 duplicate member;4 exist illegal member
+        status = 0
+        response = {}
+        name = data["name"]
+        desc = data["desc"]
         print(data)
-        return JsonResponse(data)
+        # 判断团队标题是否已经创建过
+        if name == '':
+            status = 1
+        elif not models.Team.isLegalName(request.session["uid"], name):
+            status = 2
+        else:
+            # 判断成员是否合法
+            members = data["member"]
+            members.append(request.session["email"])
+            # 重复成员
+            if len(members) != len(set(members)):
+                print(members)
+                print(set(members))
+                status = 3
+            else:
+                uids = []
+                for member in data["member"]:
+                    uid = models.User_Login.getUidByEmail(member)
+                    # 不存在的成员
+                    if uid == 0:
+                        status = 4
+                        response["illegal_email"] = member
+                        break
+                    uids.append(uid)
+                if status == 0:
+                    models.Team.createTeam(request.session["uid"], name, uids)
+        
+        response["status"] = status
+        return JsonResponse(response)
 
 
 def getUsrInfo(request:HttpRequest):
     user_info = models.User_Info.getRecordByKey(request.session["uid"])
     return JsonResponse(user_info)
+
+def try_board(request:HttpRequest):
+    kind = int(request.GET.get("kind"))
+    board_kind = models.Person_Board if kind == 0 else models.Team_Board
+    bid = request.GET.get("id")
+    name = models.Board.getBoardByBid(board_kind, bid)
+    return HttpResponse("<h1>进入看板 {} </h1>".format(name))
+
+
+def delete(request:HttpRequest, what:str):
+    if not request.session["is_login"]:
+        return HttpResponse('')
+    # 删除看板 通过bid
+    if what == "board":
+        kind = int(request.GET.get("kind"))
+        board_kind = models.Person_Board if kind == 0 else models.Team_Board
+        bid = request.GET.get("id")
+        models.Board.deleteByBid(board_kind, bid)
+    # 删除团队 通过tid
+    elif what == "team":
+        tid = int(request.GET.get("id"))
+        models.Team.deleteByTid(tid)
+    elif what == "teammate":
+        uid = int(request.GET.get("uid"))
+        tid = int(request.GET.get("tid"))
+        models.Team_Member.deleteMember(tid, uid)
+
+    return HttpResponse('')
+
+
+def invite(request:HttpRequest):
+    response = {}
+    # 状态码 status: 0 success ; 1 empty email; 2 existed; 3 not existed;
+    status = 0
+    email = request.GET.get("email")
+    tid = int(request.GET.get("tid"))
+    if email == "":
+        status = 1
+    else:
+        uid = models.User_Login.getUidByEmail(email)
+        if uid == 0:
+            status = 3
+        else:
+            records =  models.Team_Member.getTeammates(tid)
+            for record in records:
+                if uid == record[models.Team_Member.uid]:
+                    status = 2
+                    break
+            if status != 2:
+                models.Team_Member.insert(tid, uid)
+
+    response["status"] = status
+    response["email"] = email
+    return JsonResponse(response)

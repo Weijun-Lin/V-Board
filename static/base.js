@@ -52,22 +52,23 @@ $("#submit_team_set").click(function () {
             }
         },
         success: function (data) {
-            console.log(data);
             status = data.status;
             if (status == 0) {
-
+                // 成功重新加载界面
+                alert("团队新建成功")
+                window.location.reload();
             } else if (status == 1) {
-
+                alert("团队名称不能为空");
             } else if (status == 2) {
-
+                alert("团队名称重复");
             } else if (status == 3) {
-
+                alert("存在重复成员")
             } else if (status == 4) {
-
+                alert(data.illegal_email+" 非法成员");
             }
         },
         error: function () {
-            alert("添加看板失败");
+            alert("添加团队失败 sorry ");
         }
     });
 });
@@ -88,10 +89,8 @@ function updateInputJS() {
 // 动态添加成员
 $("#add_team_member").click(function () {
     var i = '<div class="d-flex mr-3 mb-2"> \
-                <input class="form-control form-control-sm team_member_label" placeholder="email"> \
-                <button type="button ml-3" class="close" aria-label="Close" style="outline:none;"> \
-                <span aria-hidden="true">&times;</span> \
-                </button>\
+                <input class="form-control form-control-sm team_member_label ellipsis" placeholder="email"> \
+                <button class="icon-close border-0 transparent pb-2" style="outline:none;"></button>\
              </div>';
     $("#teammates").append(i);
     var last = $("#teammates").find('input').last(); // last为新加入的成员框
@@ -99,9 +98,10 @@ $("#add_team_member").click(function () {
     last.next().css('visibility', 'hidden'); // 关闭按钮默认不可见
     updateInputJS();
     // 失去焦点 如果没有输入则删除
-    last.blur(function () {
+    last.blur(function (e) {
         if ($(this).val().length == 0) {
             $(this).parent().remove();
+            return;
         }
         $(this).attr('title', $(this).val());
     });
@@ -129,7 +129,7 @@ $("#add_team_member").click(function () {
 // 上传图片 按钮（图片）点击产出文件选择框
 $("#button_avatar").click(function () {
     $("#form_change_avatar").find("input").click();
-    $("#form_change_avatar").find("input").change(function () {
+    $("#form_change_avatar").find("input").unbind("change").change(function () {
         // 点了取消选择文件
         if ($(this).val() == '') {
             return;
@@ -199,7 +199,7 @@ $("#submit_usr_set").click(function () {
             }
         },
         error: function () {
-            alert("创建失败");
+            alert("创建失败 sorry");
         }
     });
 
@@ -209,8 +209,7 @@ $("#submit_usr_set").click(function () {
 // 监听模态框隐藏事件
 $(function () {
     $("#userSetModal").on('hidden.bs.modal', function () {
-        $.get("/get_usrinfo/", function (data) {
-            console.log(data.description)
+        $.get("/get_userinfo/", function (data) {
             $("#user_set_nick_name").val(data.name);
             $("#use_set_desc").val(data.description);
         })
@@ -222,7 +221,7 @@ $(function () {
 $("#submit_board").click(function () {
     if ($("#add_board").find("[name=title]").val() == '') {
         alert("标题不能为空");
-        return
+        return;
     }
     // 获取数据 标题 & 类型 & 是否公开
     data = {
@@ -234,7 +233,7 @@ $("#submit_board").click(function () {
     $.ajax({
         type: "POST",
         url: "/add_board/",
-        dataType: "text",
+        dataType: "json",
         data: JSON.stringify(data),
         clearForm: true,
         beforeSend: function (xhr, settings) {
@@ -244,13 +243,19 @@ $("#submit_board").click(function () {
             }
         },
         success: function (data) {
-            alert("上传成功");
-            // 清空表单
-            $("#form_add_board")[0].reset();
-
+            status = data.status;
+            if (status == 0) {
+                alert("创建成功")
+                // 刷新
+                window.location.reload();
+            } else if (status == 1) {
+                alert("标题不能为空");
+            } else if (status == 2) {
+                alert("重复看板 请重新输入");
+            }
         },
         error: function () {
-            alert("创建失败");
+            alert("创建看板失败 sorry");
         }
     });
 })

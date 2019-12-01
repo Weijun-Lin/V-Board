@@ -14,7 +14,7 @@ def login(request: HttpRequest):
         password = request.POST.get('password')
         # login
         if request.POST.get('signin', -1) != -1:
-            if models.Usr_Login.isLegal(email, password):
+            if models.User_Login.isLegal(email, password):
                 request.session['is_login'] = True
                 request.session['email'] = email
                 # 获取 UID 保存起来方便使用
@@ -26,7 +26,7 @@ def login(request: HttpRequest):
         # Register
         elif request.POST.get('signup', -1) != -1:
             usr_name = request.POST.get('name')
-            if not models.Usr_Login.register(usr_name, email, password):
+            if not models.User_Login.register(usr_name, email, password):
                 return render(request, 'login.html', context={"reg_error":True})
             else:
                 return render(request, 'login.html', context={"alert":True})

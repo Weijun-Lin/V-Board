@@ -26,11 +26,14 @@ urlpatterns = [
     path('login/', include("login.urls")),
     path('logout/', logout, name="logout"),
     path('home/', include("home.urls")),
+    path('board/', try_board),
     path('set_avatar/', setAvatar),
     path('add_board/', addBoard),
     path('user_set/', userSet),
     path('add_team/', addTeam),
-    path('get_usrinfo/', getUsrInfo),
+    path('get_userinfo/', getUsrInfo),
+    path('delete/<str:what>/', delete),
+    path('invite/', invite),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

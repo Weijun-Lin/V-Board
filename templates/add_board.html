@@ -1,9 +1,8 @@
 <!-- 添加看板模态框 -->
-<div class="modal fade" id="add_board" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-sm" role="document">
+<div class="modal fade" id="add_board" tabindex="-1" role="dialog" >
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form action="" method="POST" id="form_add_board">
+            <form action="" method="POST" id="form_add_board" onkeydown="if(event.keyCode==13){return false;}">
                 <div class="modal-header">
                     <input type="text" class="form-control" placeholder="添加看板标题" name="title">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -12,9 +11,10 @@
                 </div>
                 <div class="modal-body">
                     <select class="custom-select custom-select-sm" style="min-width: 60%; width: 60%;">
-                        <option value="1" selected>个人</option>
-                        <option value="2">团队1</option>
-                        <option value="3">团队2</option>
+                        <option value="0" selected>个人</option>
+                        {% for team in teams %}
+                        <option value="{{team.tid}}">{{team.name}}</option>
+                        {% endfor %}
                     </select>
                     <div class="custom-control custom-switch mt-3">
                         <input type="checkbox" class="custom-control-input" id="add_board_Switch">

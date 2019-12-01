@@ -1,7 +1,7 @@
 <!-- 添加团队模态框 -->
 <div class="modal fade" id="add_team_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered" role="document" style="">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">构建团队</h5>
@@ -14,7 +14,7 @@
                 <form action="" method="POST" id="form_add_team" onkeydown="if(event.keyCode==13){return false;}">
                     {% csrf_token %}
                     <div class="form-group my-1">
-                        <label for="add_team_nick_name" class="col-form-label">团队名字</label>
+                        <label for="add_team_nick_name" class="col-form-label">团队名称</label>
                         <input type="text" class="form-control form-control-sm" id="add_team_nick_name">
                     </div>
                     <div class="form-group my-1">

@@ -1,7 +1,3 @@
-html {
-    overflow-y: hidden;
-}
-
 body {
     margin-top: 4.5rem; /*保证导航栏不遮挡东西*/
 }
@@ -21,11 +17,25 @@ body {
     cursor:pointer;
 }
 
-.team_member_label {
+
+.ellipsis {
 	overflow: hidden;
 	text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+/* 添加团队成员 */
+.team_member_label {
     width:4rem;
     max-width:11rem;
     background-color:rgb(232, 240, 254);
+}
+
+.team_title {
+    max-width: 10rem;
+}
+
+/* 显示成员下拉 */
+.team_member_list {
+    max-width:8rem;
 }

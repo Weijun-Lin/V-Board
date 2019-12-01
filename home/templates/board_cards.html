@@ -1,20 +1,66 @@
 <!-- 主页上的看板预览块 -->
-<h5 class="font-weight-bold"><span class="icon-{{boards.icon}} m-2"></span>{{boards.name}}</h5>
-<div class="container m-0">
-    <div class="row">
-        {% for board in boards.items %}
-        <div class="d-flex justify-content-between border p-2 rounded-lg m-2 v_card">
-                <h6 class="font-weight-bold">{{board.name}}</h6>
-                <div class="d-flex justify-content-between">
-                    <h7>{{board.belong}}</h7>
-                    <button class="icon-star border-0 transparent
-                    {% if board.starred is True %}
-                    starred
-                    {% else %}
-                    unstarred
-                    {% endif %}" style="outline:none;"></button>
+<div class="team_block" {% if boards.type == 1 %} data-target="{{boards.tid}}" data-name="{{boards.name}}" {% endif %} data-type="{{boards.type}}">
+    <div class="d-flex flex-row">
+        <h5 class="font-weight-bold ellipsis team_title" title="{{boards.name}}"><span class="icon-{{boards.icon}} m-2"></span>{{boards.name}}</h5>
+        <!-- 如果是团队面板 -->
+        {% if boards.type == 1 %}
+        <!-- 显示成员列表 -->
+        <div class="dropdown">
+            <button type="button" class="btn btn-sm btn-outline-dark ml-4 home_teammates" data-toggle="dropdown" ><span class="icon-user"></span> 成员({{boards.teammates|length}})</button>
+            <div class="dropdown-menu autoscroll" style="max-height: 15rem;">
+                {% for teammate in boards.teammates %}
+                <div class="my-1 mx-2 d-flex flex-row justify-content-between teammate_list" style="width: 12rem;">
+                    <!-- 以后链接到用户介绍界面 -->
+                    <p data-target="{{teammate.uid}}">{{teammate.email}}</p>
+                    {% if teammate.uid != teammate.owner_id and uid == teammate.owner_id%}
+                    <button class="icon-close border-0 transparent pb-2" onclick="event.stopPropagation()" style="color: red;outline: none;"></button>
+                    <!-- 只有创建人才可以删除 -->
+                    {% elif  teammate.uid == teammate.owner_id%}
+                    <button class="icon-pin border-0 transparent pb-2" onclick="event.stopPropagation()" style="outline: none;" title="创建者"></button>
+                    {% endif %}
                 </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
+        <button type="button" class="btn btn-sm btn-outline-info ml-3 home_invite" data-toggle="modal" data-target="#invite_teammates">
+            <span class="icon-user-follow"></span> 邀请
+        </button>
+        {% if uid == boards.teammates.0.owner_id %}
+        <!-- 创始人才可以删除 -->
+        <button type="button" class="btn btn-sm btn-outline-danger ml-3 home_delete_team"><span class="icon-trash"></span> 删除</button>
+        {% endif %}
+        {% endif %}
+    </div>
+    <div class="container m-0">
+        <div class="row">
+            <!-- 看板主体 -->
+            {% for board in boards.items %}
+            <div class="d-flex justify-content-between border p-2 rounded-lg m-2 v_card" data-target="{{board.BID}}" data-type="{{boards.type}}">
+                    <h6 class="font-weight-bold" title="{{board.name}}">{{board.name}}</h6>
+                    <div class="d-flex justify-content-between">
+                        <h7>{{board.belong}}</h7>
+                        <div>
+                            <button class="icon-trash border-0 transparent p-0 font-weight-bold" style="color: rgb(202, 62, 68);outline:none;"></button>
+                            <button class="icon-star border-0 transparent
+                            {% if board.starred is True %}
+                            starred
+                            {% else %}
+                            unstarred
+                            {% endif %}" style="outline:none;"></button>
+                        </div>
+                    </div>
+            </div>
+            {% endfor %}
+            <!-- 最后一个是新建看板 -->
+            <div class="d-flex justify-content-center border p-2 rounded-lg m-2 text-center v_card
+            {% if boards.type == 0 %}
+            add_personal_board"
+            {% elif boards.type == 1 %}
+            add_team_board"
+            data-target="{{boards.TID}}"
+            {% endif %}>
+                <h6><span class="icon-plus p-2"></span>添加新看板</h6>
+            </div>
+        </div>
     </div>
 </div>

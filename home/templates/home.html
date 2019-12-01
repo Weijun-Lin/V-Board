@@ -12,12 +12,13 @@
 
 {% block content %}
 <div class="d-flex flex-column p-2 home_body">
-    {% include 'board_cards.html' with boards=person_boards %}
+    {% include 'board_cards.html' with boards=person_boards uid=uid%}
     <br>
     {% for team_boards in teams_boards %}
-    {% include 'board_cards.html' with boards=team_boards %}
+    {% include 'board_cards.html' with boards=team_boards uid=uid%}
     <br>
     {% endfor %}
 </div>
+{% include 'invite.html' %}
 <script src="{% static 'home.js' %}"></script>
 {% endblock content %}

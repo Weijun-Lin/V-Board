@@ -8,7 +8,6 @@
         User_Info: table of users themselves information
 """
 
-from django.db import connection
 from .sql import *
 
 
@@ -22,12 +21,8 @@ class User_Login:
     password = "password"
 
     @staticmethod
-    def show():
-        return str(sql("desc {}".format(User_Login.table_name)))
-
-    @staticmethod
     def getRecordByKey(_email):
-        return getTupleByKey(User_Login.table_name, [User_Login.email], [_email])
+        return getTuplesByEqualCond(User_Login.table_name, [User_Login.email], [_email])[0]
 
     @staticmethod
     def insert(_email, _uid, _password):
@@ -54,7 +49,7 @@ class User_Login:
         else:
             # insert into usr_info
             User_Info.insert(_name)
-            uid = sql_select(User_Info.table_name)[-1][User_Info.uid]
+            uid = getLastRecord(User_Info.table_name, User_Info.uid)[User_Info.uid]
             print(uid)
             User_Login.insert(_email, uid, _password)
             return True
@@ -62,6 +57,18 @@ class User_Login:
     @staticmethod
     def changePassword(_email, _newpassword):
         sql_update(User_Login.table_name, "{}='{}'".format(User_Login.email, _email), **{User_Login.password:_newpassword})
+    
+    @staticmethod
+    def getUidByEmail(_email):
+        res = getTuplesByEqualCond(User_Login.table_name, [User_Login.email], [_email])
+        if len(res) == 0:
+            return 0 # 查无此人
+        return res[0][User_Login.uid]
+
+    @staticmethod
+    def getEmailByUid(_uid):
+        return getTuplesByEqualCond(User_Login.table_name, [User_Login.uid], [_uid])
+        
 
 
 class User_Info:
@@ -80,7 +87,7 @@ class User_Info:
 
     @staticmethod
     def getRecordByKey(_uid):
-        return getTupleByKey(User_Info.table_name, [User_Info.uid], [_uid])
+        return getTuplesByEqualCond(User_Info.table_name, [User_Info.uid], [_uid])[0]
 
     @staticmethod
     def insert(_name, _avatar='', _description=''):
