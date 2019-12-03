@@ -39,3 +39,30 @@ body {
 .team_member_list {
     max-width:8rem;
 }
+
+.transparent {
+    background-color: transparent;
+}
+
+.starred {
+    color: rgb(255, 193, 7);
+}
+
+.unstarred {
+    color: black;
+}
+
+
+.autoscroll{
+    overflow-y :auto;
+    /* overflow: hidden; */
+    /* overflow-y:scroll; */
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.delete_color {
+    color: #dc3545;
+}

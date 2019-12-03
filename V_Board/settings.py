@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'V_Board',
     'login',
 	'home',
+    'board',
 ]
 
 MIDDLEWARE = [

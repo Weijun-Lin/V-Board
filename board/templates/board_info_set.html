@@ -1,0 +1,26 @@
+<!-- 看板修改信息 模态框 -->
+<div class="modal fade" id="board_info_set" tabindex="-1" role="dialog">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header py-2">
+                <h5 class="modal-title mt-1 ml-2 font-weight-bold">看板信息</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body py-2">
+                <div class="form-group my-1">
+                    <label for="board_info_set_name" class="col-form-label">看板名称</label>
+                    <input type="text" class="form-control form-control-sm" id="board_info_set_name" value="测试看板">
+                </div>
+                <div class="form-group my-1">
+                    <label for="use_set_desc" class="col-form-label">看板介绍</label>
+                    <textarea class="form-control form-control-sm" id="use_set_desc" placeholder="看板介绍" style="height: 5.5rem;">{{user_desc}}</textarea>
+                </div>
+            </div>
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-outline-success btn-sm" id="submit_usr_set">修改</button>
+            </div>
+        </div>
+    </div>
+</div>

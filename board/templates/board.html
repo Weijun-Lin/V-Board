@@ -1,0 +1,50 @@
+{% extends "navbar.html" %}
+
+{% load static%}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'board.css' %}">
+{% endblock link %}
+
+{% block title %}
+    {{board_info.name}} | V-Board
+{% endblock title %}
+
+{% block content %}
+<!-- 看板的一些信息 -->
+<div class="d-flex border-bottom border-secondary pb-2" data-type="{{kind}}" data-target="{{board_info.BID}}">
+    <h5 class="font-weight-bold px-3 pointer" data-toggle="modal" data-target="#board_info_set"><span class="icon-calendar mr-3"></span>{{board_info.name}}</h5>
+    <button type="button" class="btn btn-sm btn-outline-success ml-3 px-2" data-toggle="modal" data-target="#board_info_set">
+        <span class="icon-note"></span> 更改看板信息
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-info ml-3 px-2">
+        <span class="icon-people"></span> 更改所属团队
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ml-3 px-2" data-toggle="modal" data-target="#invite_teammates">
+        <span class="icon-user-follow"></span> 添加成员
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-info ml-3 px-2" id="collapse_lists">
+        <span class="icon-arrow-up"></span> 折叠列表
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-danger ml-3 px-2">
+        <span class="icon-trash"></span> 删除看板
+    </button>
+</div>
+
+<!-- 循环渲染列表 -->
+<div class="d-flex flex-row mx-5 my-3 my-1">
+    {% for list in lists%}
+    {% include 'list.html' with list=list %}
+    {% endfor %}
+    <button class="p-1 m-2 btn btn-outline-info add_list" data-toggle="modal" data-target="#add_list">+ 添加另一个列表</button>
+</div>
+
+<!-- 所有需要的模态框 -->
+{% include 'easy_add.html' with id='add_list' placeholder='列表标题' button_name='添加' %}
+{% include 'easy_add.html' with id='add_card' placeholder='卡片标题' button_name='添加' %}
+{% include 'easy_add.html' with id='invite_teammates' placeholder='成员邮箱' button_name='邀请' %}
+{% include 'board_info_set.html' %}
+{% include 'card_modal.html' %}
+
+<script src="{% static 'board.js' %}"></script>
+{% endblock content %}

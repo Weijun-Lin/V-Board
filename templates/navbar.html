@@ -7,7 +7,7 @@
         aria-controls="navbarTogglerDemo03" aria-expanded="true" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand font-weight-bold" href="">V-Border</a>
+    <a class="navbar-brand font-weight-bold" href="">V-Board</a>
 
     <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -32,6 +32,9 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="" data-toggle="modal" data-target="#add_board">添加看板</a>
+                    {% if navbar_add_list|default:False %}
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#add_list">添加列表</a>
+                    {% endif %}
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="" data-toggle="modal" data-target="#add_team_modal">添加团队</a>
                 </div>
@@ -51,7 +54,7 @@
                 <a class="nav-link dropdown-toggle" href="" role="button" data-toggle="dropdown">
                     <img class="img-fluid rounded-circle ml-2 avatar" src="{{avatar_path}}">
                 </a>
-                <div class="dropdown-menu">
+                <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item disabled" href="">{{user_name}}</a>
                     <a class="dropdown-item" href="" data-toggle="modal" data-target="#userSetModal"><span class="icon-settings pr-2"></span>设置</a>
                     <div class="dropdown-divider"></div>

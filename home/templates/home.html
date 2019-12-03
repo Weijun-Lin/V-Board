@@ -19,6 +19,6 @@
     <br>
     {% endfor %}
 </div>
-{% include 'invite.html' %}
+{% include 'easy_add.html' with id='invite_teammates' button_name='邀请' placeholder='成员邮箱'%}
 <script src="{% static 'home.js' %}"></script>
 {% endblock content %}

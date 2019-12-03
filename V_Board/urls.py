@@ -26,7 +26,7 @@ urlpatterns = [
     path('login/', include("login.urls")),
     path('logout/', logout, name="logout"),
     path('home/', include("home.urls")),
-    path('board/', try_board),
+    path('board/', include("board.urls")),
     path('set_avatar/', setAvatar),
     path('add_board/', addBoard),
     path('user_set/', userSet),

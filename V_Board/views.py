@@ -33,7 +33,7 @@ def addBoard(request:HttpRequest):
     if request.method == "POST":
         data = json.loads(request.body)
         response = {}
-        # 状态码 status: 0 success ; 1 empty title; 2 illegal title;
+        # 状态码 status: 0 success ; 1 empty title; 2 illegal title; 3 too long
         status = 0
         name = data["title"]
         kind = int(data["type"])
@@ -41,6 +41,8 @@ def addBoard(request:HttpRequest):
 
         if name == "":
             status = 1
+        elif len(name) > 80:
+            status = 3
         else:
             # 向个人或者团队中插入数据
             board_kind = models.Person_Board if kind == 0 else models.Team_Board
@@ -80,7 +82,7 @@ def userSet(request:HttpRequest):
             status = 2
         elif newpass != repass:
             status = 3
-        elif login_info[models.Usr_Login.password] != srcpass:
+        elif login_info[models.User_Login.password] != srcpass:
             status = 1
         else:
             models.User_Login.changePassword(request.session["email"], newpass)
@@ -94,7 +96,7 @@ def userSet(request:HttpRequest):
 def addTeam(request:HttpRequest):
     if request.method == 'POST':
         data = json.loads(request.body)
-        # 状态码 status: 0 success ; 1 empty title; 2 illegal title; 3 duplicate member;4 exist illegal member
+        # 状态码 status: 0 success ; 1 empty title; 2 illegal title; 3 duplicate member;4 exist illegal member;5 too long
         status = 0
         response = {}
         name = data["name"]
@@ -103,6 +105,8 @@ def addTeam(request:HttpRequest):
         # 判断团队标题是否已经创建过
         if name == '':
             status = 1
+        elif len(name) > 80:
+            status = 5
         elif not models.Team.isLegalName(request.session["uid"], name):
             status = 2
         else:

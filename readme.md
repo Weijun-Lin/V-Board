@@ -166,3 +166,96 @@ DATABASES = {
 
 项目根目录下添加相关前端模板（templates）和JS、CSS（static）
 
+### 2019-12-2
+
+#### 当前效果预览
+
+![](./readmeImgs/home.png)
+
+#### 添加功能
+
+> 将上次的功能后端实现，并且添加以下功能：
+
+- 看板删除
+- 团队删除
+- 团队成员删除
+
+#### 数据库添加
+
+1. Team:
+
+	```sql
+	CREATE TABLE `team` (
+		`TID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '团队唯一标识',
+		`name` VARCHAR(50) NOT NULL COMMENT '团队名字',
+		`UID` INT(11) UNSIGNED NOT NULL COMMENT '外键指向用户 表示所属',
+		PRIMARY KEY (`TID`),
+		INDEX `FK__usr_info` (`UID`),
+		CONSTRAINT `FK__usr_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	)
+	COMMENT='记录团队信息'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	;
+	```
+
+2. Team_Member:
+
+	```sql
+	CREATE TABLE `team_member` (
+		`TID` INT(10) UNSIGNED NOT NULL COMMENT '外键',
+		`UID` INT(10) UNSIGNED NOT NULL COMMENT '外键',
+		PRIMARY KEY (`TID`, `UID`),
+		INDEX `FK_team_member_usr_info` (`UID`),
+		CONSTRAINT `FK_team_member_team` FOREIGN KEY (`TID`) REFERENCES `team` (`TID`) ON UPDATE CASCADE ON DELETE CASCADE,
+		CONSTRAINT `FK_team_member_usr_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	)
+	COMMENT='团队成员表'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	;
+	```
+
+3. Personal_Board:
+
+	```sql
+	CREATE TABLE `personal_board` (
+		`BID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '个人看板编号',
+		`name` VARCHAR(50) NOT NULL COMMENT '看板名字',
+		`description` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '看板描述',
+		`uid` INT(10) UNSIGNED NOT NULL COMMENT '所有者编号',
+		`is_public` TINYINT(1) NULL DEFAULT '0',
+		`is_star` TINYINT(1) NULL DEFAULT '0',
+		`time` TIMESTAMP NULL DEFAULT NULL,
+		PRIMARY KEY (`BID`),
+		INDEX `FK__board_usr_info` (`uid`),
+		CONSTRAINT `FK__board_usr_info` FOREIGN KEY (`uid`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	)
+	COMMENT='personal_board: (BID, name, description, uid)'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	AUTO_INCREMENT=21
+	;
+	```
+
+4. Team_Board:
+
+	```sql
+	CREATE TABLE `team_board` (
+		`BID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+		`name` VARCHAR(50) NOT NULL,
+		`description` VARCHAR(500) NOT NULL DEFAULT '',
+		`TID` INT(10) UNSIGNED NOT NULL,
+		`is_public` TINYINT(1) NULL DEFAULT '0',
+		`is_star` TINYINT(1) NULL DEFAULT '0',
+		`time` TIMESTAMP NULL DEFAULT NULL,
+		PRIMARY KEY (`BID`),
+		INDEX `FK__team_board_team` (`TID`),
+		CONSTRAINT `FK__team_board_team` FOREIGN KEY (`TID`) REFERENCES `team` (`TID`) ON UPDATE CASCADE ON DELETE CASCADE
+	)
+	COMMENT='团队看板'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
+	;
+	```
+
