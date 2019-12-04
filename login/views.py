@@ -18,7 +18,7 @@ def login(request: HttpRequest):
                 request.session['is_login'] = True
                 request.session['email'] = email
                 # 获取 UID 保存起来方便使用
-                request.session['uid'] = models.User_Login.getRecordByKey(email)[models.User_Login.uid]
+                request.session['uid'] = models.User_Login.getRecordByKey(email)[0][models.User_Login.uid]
                 print(request.session['uid'])
                 return redirect(reverse("home:home"))
             else:

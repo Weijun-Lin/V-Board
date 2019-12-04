@@ -22,7 +22,7 @@ class User_Login:
 
     @staticmethod
     def getRecordByKey(_email):
-        return getTuplesByEqualCond(User_Login.table_name, [User_Login.email], [_email])[0]
+        return getTuplesByEqualCond(User_Login.table_name, [User_Login.email], [_email])
 
     @staticmethod
     def insert(_email, _uid, _password):
@@ -36,10 +36,10 @@ class User_Login:
         判断是否是合法账号密码
         """
         record = User_Login.getRecordByKey(_email)
-        if record == {}:
+        if len(record) == 0:
             return False
         else:
-            return record[User_Login.password] == _password
+            return record[0][User_Login.password] == _password
 
     @staticmethod
     def register(_name, _email, _password)->bool:

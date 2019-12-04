@@ -61,6 +61,10 @@ class Team:
         for member in _members:
             Team_Member.insert(tid, member)
 
+    @staticmethod
+    def changeTeamName(_tid, _name):
+        sql_update(Team.table_name, "{}={}".format(Team.tid, _tid), **{Team.name:_name})
+
 
         
 class Team_Member:

@@ -127,3 +127,28 @@ $(".teammate_list").find("button.icon-close").click(function () {
         }
     );
 })
+
+$(".home_rename_team").click(function () {
+    team_block = $(this).parents(".team_block");
+    $("#change_team_name").attr("data-target", team_block.attr("data-target"));
+})
+
+$("#change_team_name").find("button").click(function () {
+    event.stopPropagation();    // 阻止冒泡 防止触发div的点击事件
+    url = "/home/changeTeamName/?tid="+$("#change_team_name").attr("data-target")+"&name="+$("#change_team_name").find("input").val();
+    $.get(url,
+        function (data) {
+            status = data.status
+            if(status == 0) {
+                alert("更改成功");
+                window.location.reload();
+            }
+            else if (status == 1) {
+                alert("名称不能为空");
+            }
+            else if (status == 2) {
+                alert(data.name+" 团队已存在");
+            }
+        }
+    );
+})

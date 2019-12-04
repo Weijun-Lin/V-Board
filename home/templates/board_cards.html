@@ -26,7 +26,8 @@
             <span class="icon-user-follow"></span> 邀请
         </button>
         {% if uid == boards.teammates.0.owner_id %}
-        <!-- 创始人才可以删除 -->
+        <!-- 创始人才可以删除以及更改名字 -->
+        <button type="button" class="btn btn-sm btn-outline-success ml-3 home_rename_team" data-toggle="modal" data-target="#change_team_name"><span class="icon-pencil"></span> 更改名字</button>
         <button type="button" class="btn btn-sm btn-outline-danger ml-3 home_delete_team"><span class="icon-trash"></span> 删除</button>
         {% endif %}
         {% endif %}

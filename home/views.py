@@ -61,3 +61,30 @@ def home(request:HttpRequest):
     user_desc = user_info[models.User_Info.description]
     
     return render(request, 'home.html', context=locals())
+
+
+def changeTeamName(request:HttpRequest):
+    """ 改变团队名字 """
+    if not request.session.get('is_login'):
+	    return HttpResponse("?")
+    
+    response = {}
+    # 状态码 status: 0 success ; 1 empty name; 2 existed;
+    status = 0
+    name = request.GET.get("name")
+    tid = int(request.GET.get("tid"))
+    uid = request.session["uid"]
+    if name == "":
+        status = 1
+    else:
+        teams = models.Team.getRecordsByUid(uid)
+        for team in teams:
+            if name == team[models.Team.name]:
+                status = 2
+                break
+        if status != 2:
+            models.Team.changeTeamName(tid, name)
+
+    response["status"] = status
+    response["name"] = name
+    return JsonResponse(response)
