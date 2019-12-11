@@ -25,11 +25,11 @@
         <button type="button" class="btn btn-sm btn-outline-info ml-3 home_invite" data-toggle="modal" data-target="#invite_teammates">
             <span class="icon-user-follow"></span> 邀请
         </button>
-        {% if uid == boards.teammates.0.owner_id %}
-        <!-- 创始人才可以删除以及更改名字 -->
-        <button type="button" class="btn btn-sm btn-outline-success ml-3 home_rename_team" data-toggle="modal" data-target="#change_team_name"><span class="icon-pencil"></span> 更改名字</button>
-        <button type="button" class="btn btn-sm btn-outline-danger ml-3 home_delete_team"><span class="icon-trash"></span> 删除</button>
-        {% endif %}
+            {% if uid == boards.teammates.0.owner_id %}
+            <!-- 创始人才可以删除以及更改名字 -->
+            <button type="button" class="btn btn-sm btn-outline-success ml-3 home_rename_team" data-toggle="modal" data-target="#change_team_name"><span class="icon-pencil"></span> 更改名字</button>
+            <button type="button" class="btn btn-sm btn-outline-danger ml-3 home_delete_team"><span class="icon-trash"></span> 删除</button>
+            {% endif %}
         {% endif %}
     </div>
     <div class="container m-0">
@@ -41,7 +41,9 @@
                     <div class="d-flex justify-content-between">
                         <h7>{{board.belong}}</h7>
                         <div>
+                            {% if boards.type == 1 and uid == boards.teammates.0.owner_id or boards.type != 1%}
                             <button class="icon-trash border-0 transparent p-0 delete_color" style="outline:none;"></button>
+                            {% endif %}
                             <button class="icon-star border-0 transparent
                             {% if board.starred is True %}
                             starred

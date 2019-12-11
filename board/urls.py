@@ -6,4 +6,6 @@ app_name = 'board'
 
 urlpatterns = [
     path('', board, name="board"),
+    path('set_board_info/', boardSet),
+    path('get_board_info/', getBoardInfo),
 ]

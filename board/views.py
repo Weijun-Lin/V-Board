@@ -2,9 +2,17 @@ from django.shortcuts import render, redirect, reverse
 from django.http import *
 from django.conf import settings
 import os
+import json
 import models
 
 # Create your views here.
+
+def isOwner(_bid, _uid, _board_type):
+    owner_id = models.Board.getBoardByBid(_board_type, _bid)[0][_board_type.owner_id]
+    if _board_type == models.Person_Board:
+        return _uid == owner_id
+    else:
+        return _uid == models.Team.getRecordsByTid(owner_id)[0][models.Team.uid]
 
 def board(request:HttpRequest):
     # 没登陆直接访问 跳转到登陆界面
@@ -39,6 +47,9 @@ def board(request:HttpRequest):
             cards = models.Card.getCardsByLid(card_type, lid) # 字典的列表
             lists.append({"info":lid_dict, "cards": cards}) # 包含 lid, name 以及 lid 对应的card
 
+        # 判断是否为 owner
+        isowner = isOwner(bid, uid, board_type)
+        # if kind == 0 and owner_id == 
         # 以下信息同 home.view 构建导航栏所需要的信息
         # 获取用户信息
         login_info = models.User_Login.getRecordByKey(request.session["email"])
@@ -57,3 +68,49 @@ def board(request:HttpRequest):
         user_desc = user_info[models.User_Info.description]
         
         return render(request, "board.html", context=locals())
+
+
+def boardSet(request:HttpRequest):
+    if request.method == "POST":
+        # 获取数据
+        data = json.loads(request.body)
+        print(data)
+        uid = request.session["uid"]
+        bid = int(data["bid"])
+        kind = int(data["kind"])
+
+        # 获取相应信息
+        board_type = models.Person_Board if kind == 0 else models.Team_Board
+        list_type = models.P_List if kind == 0 else models.T_List
+        card_type = models.P_Card if kind == 0 else models.T_Card
+
+        
+        board_name = data["board_name"]
+        desc = data["desc"]
+        # 状态码 status: 0 success ; 1 empty title; 2 illegal title; 3 too long
+        reponse = {}    # 返回的字典
+        status = 0
+        if board_name == "":
+            status = 1
+        elif len(board_name) > 50:
+            status = 3
+        else:
+            # 判断是否重复
+            owner_id = models.Board.getBoardByBid(board_type, bid)[0][board_type.owner_id]
+            boards = models.Board.getBoardsByOwner(board_type, owner_id)
+            for board in boards:
+                if board[board_type.owner_id] != owner_id and board[board_type.name] == board_name:
+                    status = 2
+                    break
+            if status != 2:
+                models.Board.setInfo(board_type, bid, board_name, desc)
+
+        reponse['status'] = status
+        return JsonResponse(reponse)
+
+def getBoardInfo(request:HttpRequest):
+    if request.method == "GET":
+        bid = int(request.GET.get("id"))
+        kind = int(request.GET.get("kind"))
+        board_type = models.Person_Board if kind == 0 else models.Team_Board
+        return JsonResponse(models.Board.getBoardByBid(board_type, bid)[0])

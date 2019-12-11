@@ -65,3 +65,9 @@ class Board:
     @staticmethod
     def getLastByBid(_board_obj):
         return getLastRecord(_board_obj.table_name, _board_obj.bid)
+
+    @staticmethod
+    def setInfo(_board_obj, _bid, _name, _desc):
+        newValues = {_board_obj.name:_name, _board_obj.desc:_desc}
+        sql_update(_board_obj.table_name, "{}='{}'".format(_board_obj.bid, _bid),**newValues)
+

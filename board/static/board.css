@@ -20,3 +20,7 @@
 .comment_font {
     font-size: 0.88rem;
 }
+
+.board_title {
+    max-width: 15rem;
+}
