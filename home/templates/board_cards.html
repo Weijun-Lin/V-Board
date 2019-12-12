@@ -11,7 +11,7 @@
                 {% for teammate in boards.teammates %}
                 <div class="my-1 mx-2 d-flex flex-row justify-content-between teammate_list" style="width: 12rem;">
                     <!-- 以后链接到用户介绍界面 -->
-                    <p data-target="{{teammate.uid}}">{{teammate.email}}</p>
+                    <p data-target="{{teammate.uid}}" title="{{teammate.email}}">{{teammate.name}}</p>
                     {% if teammate.uid != teammate.owner_id and uid == teammate.owner_id%}
                     <button class="icon-close border-0 transparent pb-2" onclick="event.stopPropagation()" style="color: red;outline: none;"></button>
                     <!-- 只有创建人才可以删除 -->
