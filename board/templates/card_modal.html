@@ -1,5 +1,5 @@
 <!-- 看板修改信息 模态框 -->
-<div class="modal fade" id="card_modal" tabindex="-1" role="dialog">
+<div class="modal fade" id="card_modal" tabindex="-1" role="dialog" data-target data-parent>
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header py-2">
@@ -13,11 +13,11 @@
                 <div class="d-flex pb-3">
                     <div class="d-flex flex-column flex-grow-1 pr-1">
                         <div class="form-group my-1">
-                            <label for="card_modal_title" class="col-form-label">卡片标题</label>
+                            <label for="card_modal_title" class="col-form-label"><span class="icon-book-open pt-2"></span> 卡片标题</label>
                             <input type="text" id="card_modal_title" class="form-control form-control-sm font-weight-bold" value="卡片标题">
                         </div>
                         <div class="form-group my-1">
-                            <label for="card_modal_desc" class="col-form-label">卡片描述</label>
+                            <label for="card_modal_desc" class="col-form-label"><span class="icon-list pt-2"></span> 卡片描述</label>
                             <textarea class="form-control form-control-sm" id="card_modal_desc" placeholder="卡片描述" style="height: 5.5rem;"></textarea>
                         </div>
                     </div>
@@ -31,8 +31,8 @@
                         <button type="button" class="btn btn-sm btn-outline-success m-1">
                             <span class="icon-clock"></span> 截止日期
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger m-1">
-                            <span class="icon-trash"></span> 删除列表
+                        <button type="button" class="btn btn-sm btn-outline-danger m-1" id="delete_card">
+                            <span class="icon-trash"></span> 删除卡片
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary m-1" data-target="#collapse_comments" data-toggle="collapse" id="fold_comment">
                             <span class="icon-trash"></span> 折叠评论
@@ -53,9 +53,6 @@
                         {% include 'comment.html' %}
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer py-2">
-                <button type="button" class="btn btn-outline-success btn-sm" id="submit_usr_set" title="主要是标题和描述">提交修改</button>
             </div>
         </div>
     </div>

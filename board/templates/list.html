@@ -1,15 +1,16 @@
 <!-- 列表 -->
 <div>
-  <div class="d-flex flex-column p-1 border rounded-lg m-2 list">
+  <div class="d-flex flex-column p-1 border rounded-lg m-2 list" data-target="{{list.info.LID}}">
       <!-- 标题 -->
       <div class="d-flex">
-          <input type="text" class="form-control border-0 ellipsis font-weight-bold" value="{{list.info.name}}" >
+          <input type="text" class="form-control border-0 ellipsis font-weight-bold list_title" value="{{list.info.name}}" >
           <div class="dropdown">
-              <button type="button" class="icon-menu border-0 transparent" data-toggle="dropdown"></button>
+              <button type="button" class="icon-menu border-0 transparent" data-toggle="dropdown" style="outline: none;"></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item pointer" href="#collapseExample{{list.info.LID}}" data-toggle="collapse"><span class="icon-arrow-up"></span> 折叠列表</a>
                 <a class="dropdown-item pointer" data-toggle="modal" data-target="#add_card"><span class="icon-plus"></span> 添加卡片</a>
-                <a class="dropdown-item pointer" style="color: #dc3545;"><span class="icon-trash"></span> 删除列表</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item pointer delete_list" style="color: #dc3545;"><span class="icon-trash"></span> 删除列表</a>
               </div>
             </div>
       </div>
@@ -21,7 +22,7 @@
       </div>
 
       <!-- <div class="d-flex"> -->
-          <button class="m-1 btn btn-outline-secondary icon-plus" data-toggle="modal" data-target="#add_card"> 添加另一张卡片</button>
+          <button class="m-1 btn btn-outline-secondary icon-plus add_card_btn" data-toggle="modal" data-target="#add_card"> 添加另一张卡片</button>
       <!-- </div> -->
   </div>
 </div>

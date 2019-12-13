@@ -8,6 +8,7 @@ import models
 # Create your views here.
 
 def isOwner(_bid, _uid, _board_type):
+    """ 判断是否是创建者 """
     owner_id = models.Board.getBoardByBid(_board_type, _bid)[0][_board_type.owner_id]
     if _board_type == models.Person_Board:
         return _uid == owner_id
@@ -60,10 +61,6 @@ def board(request:HttpRequest):
 
         # 获取头像
         avatar_path = models.User_Info.getRecordByKey(uid)[models.User_Info.avatar]
-        # 没有设置就为默认头像
-        if len(avatar_path) == 0:
-            avatar_path = "/media/avatar/default.jpg"
-
         # 获取用户个人介绍
         user_desc = user_info[models.User_Info.description]
         
@@ -74,7 +71,6 @@ def boardSet(request:HttpRequest):
     if request.method == "POST":
         # 获取数据
         data = json.loads(request.body)
-        print(data)
         uid = request.session["uid"]
         bid = int(data["bid"])
         kind = int(data["kind"])
@@ -108,9 +104,108 @@ def boardSet(request:HttpRequest):
         reponse['status'] = status
         return JsonResponse(reponse)
 
-def getBoardInfo(request:HttpRequest):
+
+def getInfo(request:HttpRequest, what):
+    """ 获取信息 """
     if request.method == "GET":
-        bid = int(request.GET.get("id"))
+        tar_id = int(request.GET.get("id"))
         kind = int(request.GET.get("kind"))
-        board_type = models.Person_Board if kind == 0 else models.Team_Board
-        return JsonResponse(models.Board.getBoardByBid(board_type, bid)[0])
+        if what == "board":
+            board_type = models.Person_Board if kind == 0 else models.Team_Board
+            return JsonResponse(models.Board.getBoardByBid(board_type, tar_id)[0])
+        elif what == "list":
+            list_type = models.P_List if kind == 0 else models.T_List
+            return JsonResponse(models.List.getListByLid(list_type, tar_id)[0])
+        elif what == "card":
+            card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+            return JsonResponse(models.Card.getCardByCid(card_type, tar_id)[0])
+
+
+def isLegalName(_type, _name, _id, _pid):
+    """ 判断是否是重复的列表或者卡片名字 """
+    status = 0
+    if _name == "":
+        status = 1
+    elif len(_name) > 50:
+        status = 3
+    else:
+        if _type == models.P_List or _type == models.T_List:
+            lists = models.List.getListsByBid(_type, _pid)
+            for l in lists:
+                if l[models.List.name] == _name and l[models.List.lid] != _id:
+                    status = 2
+        elif _type == models.P_Card or _type == models.T_Card:
+            cards = models.Card.getCardsByLid(_type, _pid)
+            for c in cards:
+                if c[models.Card.name] == _name and c[models.Card.cid] != _id:
+                    status = 2
+    return status
+
+
+def setListName(request:HttpRequest):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        lid = int(data["lid"])
+        bid= int(data["bid"])
+        kind = int(data["kind"])    
+        list_name = data["name"]
+        list_type = models.P_List if kind == 0 else models.T_List
+        reponse = {}    # 返回的字典
+        status = isLegalName(list_type, list_name, lid, bid)
+        if status == 0:
+                models.List.setNameByLid(list_type, lid, list_name)
+        reponse["status"] = status
+        return JsonResponse(reponse)
+
+
+def setCardName(request:HttpRequest):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        lid = int(data["lid"])
+        cid= int(data["cid"])
+        kind = int(data["kind"])    
+        card_name = data["name"]
+        card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+        reponse = {}    # 返回的字典
+        status = isLegalName(card_type, card_name, cid, lid)
+        if status == 0:
+            models.Card.setName(card_type, cid, card_name)
+        reponse["status"] = status
+        return JsonResponse(reponse)        
+        
+
+def addListOrCard(request:HttpRequest, what):
+    reponse = {}    # 返回的字典
+    data = json.loads(request.body)
+    kind = int(data["kind"])   
+    name = data["name"]
+    if request.method == "POST":
+        if what == "list":
+            list_type = models.P_List if kind == 0 else models.T_List
+            bid = int(data["bid"])
+            status = isLegalName(list_type, name, -1, bid)
+            if status == 0:
+                models.List.insert(list_type, bid, name)
+            reponse["status"] = status
+            # 改为直接刷新
+            # context = {"list":{"info":{"name":name, "LID":models.List.getLast(list_type)[models.List.lid]}}}
+            # # 获取渲染后的HTML代码
+            # reponse["content"] = str(render(request,'list.html',context=context).content, encoding="utf-8")
+        elif what == "card":
+            card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+            lid = int(data["lid"])
+            status = isLegalName(card_type, name, -1, lid)
+            if status == 0:
+                models.Card.insert(card_type, lid, name)
+            reponse["status"] = status
+    return JsonResponse(reponse)
+
+def setCardDesc(request:HttpRequest):
+    if request.method == "POST":
+        data = json.loads(request.body)
+        cid= int(data["cid"])
+        kind = int(data["kind"])    
+        card_desc = data["desc"]
+        card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+        models.Card.setDescByCid(card_type, cid, card_desc)
+        return JsonResponse({})

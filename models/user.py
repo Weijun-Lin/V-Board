@@ -90,9 +90,9 @@ class User_Info:
         return getTuplesByEqualCond(User_Info.table_name, [User_Info.uid], [_uid])[0]
 
     @staticmethod
-    def insert(_name, _avatar='', _description=''):
-        key = "{}, {}, {}".format(User_Info.name, User_Info.avatar, User_Info.description)
-        values = "'{}', '{}', '{}'".format(_name, _avatar, _description)
+    def insert(_name, _description=''):
+        key = "{}, {}".format(User_Info.name, User_Info.description)
+        values = "'{}', '{}'".format(_name, _description)
         sql_insert(User_Info.table_name, values, key)
 
     @staticmethod

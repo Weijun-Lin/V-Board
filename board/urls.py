@@ -7,5 +7,9 @@ app_name = 'board'
 urlpatterns = [
     path('', board, name="board"),
     path('set_board_info/', boardSet),
-    path('get_board_info/', getBoardInfo),
+    path('get_info/<str:what>/', getInfo),
+    path('set_list_name/', setListName),
+    path('set_card_desc/', setCardDesc),
+    path('add/<str:what>/', addListOrCard),
+    path('set_card_name/', setCardName),
 ]

@@ -39,11 +39,23 @@ class List:
         return getTuplesByEqualCond(_list_obj.table_name, [List.bid], [_bid])
 
     @staticmethod
+    def getListByLid(_list_obj, _lid):
+        return getTuplesByEqualCond(_list_obj.table_name, [List.lid], [_lid])
+
+    @staticmethod
     def insert(_list_obj, _bid, _name):
         values = "{}, '{}'".format(_bid, _name)
         keys = "{},{}".format(List.bid, List.name)
         sql_insert(_list_obj.table_name, values, keys)
 
     @staticmethod
-    def deleteByLid(_list_obj, _cid):
-        deleteByEqualCond(_list_obj.table_name, [List.cid], [_cid])
+    def deleteByLid(_list_obj, _lid):
+        deleteByEqualCond(_list_obj.table_name, [List.lid], [_lid])
+
+    @staticmethod
+    def setNameByLid(_list_obj, _lid, _name):
+        sql_update(_list_obj.table_name, "{}={}".format(List.lid, _lid), **{List.name:_name})
+    
+    @staticmethod
+    def getLast(_list_obj):
+        return getLastRecord(_list_obj.table_name, List.lid)

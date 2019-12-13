@@ -17,7 +17,7 @@
 
 {% block content %}
 <!-- 看板的一些信息 -->
-<div class="d-flex border-bottom border-secondary pb-2" id="board_top" data-type="{{kind}}" data-target="{{board_info.BID}}">
+<div class="d-flex border-bottom border-secondary py-2" id="board_top" data-type="{{kind}}" data-target="{{board_info.BID}}">
     <h5 class="font-weight-bold px-3 pointer ellipsis board_title" data-toggle="modal" data-target="#board_info_set" title="{{board_info.name}}"><span class="icon-calendar mr-3"></span>{{board_info.name}}</h5>
     <button type="button" class="btn btn-sm btn-outline-success ml-3 px-2" data-toggle="modal" data-target="#board_info_set">
         <span class="icon-note"></span> 看板信息
@@ -40,7 +40,9 @@
     {% for list in lists%}
     {% include 'list.html' with list=list %}
     {% endfor %}
-    <button class="p-1 m-2 btn btn-outline-info add_list" data-toggle="modal" data-target="#add_list">+ 添加另一个列表</button>
+    <div class="p-2 pr-5">
+    <button class="p-1 btn btn-outline-info add_list" data-toggle="modal" data-target="#add_list" id="add_list_btn">+ 添加另一个列表</button>
+    </div>
 </div>
 
 <!-- 所有需要的模态框 -->

@@ -1,3 +1,16 @@
+body {
+    margin-top: 7.5rem; /*保证导航栏不遮挡东西*/
+}
+
+/* 固定位置顶层显示宽度填充满 */
+#board_top {
+    position: fixed;
+    z-index: 100;
+    top: 3.5rem;
+    width: 100%;
+    background-color: white;
+}
+
 .list {
     width: 15rem;
     min-width: 15rem;

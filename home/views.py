@@ -22,7 +22,6 @@ def home(request:HttpRequest):
     # 获取团队看板
     teams_boards = []
     tids = models.Team_Member.getTeams(uid)
-    print(tids)
     # 对每一个团队
     for tid_dict in tids:
         tid = tid_dict[models.Team_Member.tid]
@@ -44,7 +43,6 @@ def home(request:HttpRequest):
         for item in t_board_records:
             team["items"].append(item)
         teams_boards.append(team)
-    print(teams_boards)
 
     # 获取用户信息
     login_info = models.User_Login.getRecordByKey(request.session["email"])
@@ -55,9 +53,6 @@ def home(request:HttpRequest):
 
     # 获取头像
     avatar_path = models.User_Info.getRecordByKey(uid)[models.User_Info.avatar]
-    # 没有设置就为默认头像
-    if len(avatar_path) == 0:
-        avatar_path = "/media/avatar/default.jpg"
     # 获取用户个人介绍
     user_desc = user_info[models.User_Info.description]
     
@@ -89,3 +84,4 @@ def changeTeamName(request:HttpRequest):
     response["status"] = status
     response["name"] = name
     return JsonResponse(response)
+

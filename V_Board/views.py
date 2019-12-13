@@ -154,7 +154,7 @@ def delete(request:HttpRequest, what:str):
     if what == "board":
         kind = int(request.GET.get("kind"))
         board_kind = models.Person_Board if kind == 0 else models.Team_Board
-        bid = request.GET.get("id")
+        bid = int(request.GET.get("id"))
         models.Board.deleteByBid(board_kind, bid)
     # 删除团队 通过tid
     elif what == "team":
@@ -164,6 +164,16 @@ def delete(request:HttpRequest, what:str):
         uid = int(request.GET.get("uid"))
         tid = int(request.GET.get("tid"))
         models.Team_Member.deleteMember(tid, uid)
+    elif what == "list":
+        kind = int(request.GET.get("kind"))
+        lid = int(request.GET.get("id"))
+        list_type = models.P_List if kind == 0 else models.T_List
+        models.List.deleteByLid(list_type, lid)
+    elif what == "card":
+        kind = int(request.GET.get("kind"))
+        cid = int(request.GET.get("id"))
+        card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+        models.Card.deleteByCid(card_type, cid)
 
     return HttpResponse('')
 

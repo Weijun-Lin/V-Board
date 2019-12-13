@@ -42,9 +42,21 @@ class Card:
     @staticmethod
     def insert(_card_obj, _lid, _name, _desc=""):
         values = "{},'{}','{}'".format(_lid, _name, _desc)
-        keys = "{},{}".format(Card.lid, Card.name, Card.desc)
+        keys = "{},{},{}".format(Card.lid, Card.name, Card.desc)
         sql_insert(_card_obj.table_name, values, keys)
 
     @staticmethod
     def deleteByCid(_card_obj, _cid):
-        deleteByEqualCond(_card_obj.table_name, [_card_obj.cid], [_cid])
+        deleteByEqualCond(_card_obj.table_name, [Card.cid], [_cid])
+
+    @staticmethod
+    def setName(_card_obj, _cid, _name):
+        sql_update(_card_obj.table_name, "{}={}".format(Card.cid, _cid), **{Card.name:_name})
+
+    @staticmethod
+    def getCardByCid(_card_obj, _cid):
+        return getTuplesByEqualCond(_card_obj.table_name, [Card.cid], [_cid])
+
+    @staticmethod
+    def setDescByCid(_card_obj, _cid, _desc):
+        sql_update(_card_obj.table_name, "{}={}".format(Card.cid, _cid), **{Card.desc:_desc})
