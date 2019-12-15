@@ -249,18 +249,18 @@ DATABASES = {
 		`BID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '个人看板编号',
 		`name` VARCHAR(50) NOT NULL COMMENT '看板名字',
 		`description` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '看板描述',
-		`uid` INT(10) UNSIGNED NOT NULL COMMENT '所有者编号',
+		`UID` INT(10) UNSIGNED NOT NULL COMMENT '所有者编号',
 		`is_public` TINYINT(1) NULL DEFAULT '0',
 		`is_star` TINYINT(1) NULL DEFAULT '0',
 		`time` TIMESTAMP NULL DEFAULT NULL,
 		PRIMARY KEY (`BID`),
-		INDEX `FK__board_usr_info` (`uid`),
-		CONSTRAINT `FK__board_usr_info` FOREIGN KEY (`uid`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+		INDEX `FK__board_usr_info` (`UID`),
+		CONSTRAINT `FK__board_usr_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
 	)
 	COMMENT='personal_board: (BID, name, description, uid)'
 	COLLATE='utf8mb4_0900_ai_ci'
 	ENGINE=InnoDB
-	AUTO_INCREMENT=21
+	AUTO_INCREMENT=1
 	;
 	```
 
