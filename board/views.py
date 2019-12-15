@@ -160,6 +160,7 @@ def getInfo(request:HttpRequest, what):
                 isowner = isleader or request.session["uid"] == uid
                 comments = comment[models.Comment.val].split("\n")
                 response["comments"].append(str(render(request, "comment.html", locals()).content, "utf-8"))
+            response["comments"] = response["comments"][::-1]
             return JsonResponse(response)
 
 

@@ -302,6 +302,7 @@ $(".btn_card_modal").click(function () {
         $("#card_modal_desc").text(data.card.description);
         file_row = $("#collapse_files").find(".row");
         file_row.empty();
+		$("#comments").empty();
         files = data.files;
         for(i = 0;i < files.length;i++) {
             file_row.append(files[i]);
@@ -506,7 +507,7 @@ $("#upload_comment").click(function () {
             console.log(response)
             status = response.status;
             if (status == 0) {
-                $("#comments").append(response.comment_html);
+                $("#comments").prepend(response.comment_html);
                 // 清空发表的内容
                 $("#comment_text").val("");
             } else if (status == 1) {

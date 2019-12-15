@@ -14,6 +14,32 @@
 
 > 暂定
 
+```
+├─board # 看板页面
+│  ├─static
+│  ├─templates
+├─home # 用户主界面
+│  ├─static
+│  ├─templates
+├─login # 登录界面
+│  ├─static
+│  ├─templates
+├─media # 媒体文件 用户文件
+│  ├─attachment
+│  └─avatar
+├─models # 数据表
+├─readmeImgs
+├─static # 全局静态文件
+│  ├─img
+│  └─simple-line-icons
+│      ├─css
+│      └─fonts
+├─templates # 模板文件
+└─V_Board
+    ├─static
+    ├─templates
+```
+
 ## 开发日志
 
 ### 2019-11-8
@@ -101,28 +127,13 @@ DATABASES = {
 #### 数据库表配置
 
 > 项目未使用 Django 自带的模型，实现原生SQL实现数据库操作
+>
+> Linux 下 数据库为 MariaDB 5.5.64 需要将编码设置为`utf8_general_ci`
 
-- usr_info表：保存用户的个人信息等
-
-	```sql
-	CREATE TABLE `usr_login` (
-		`email` VARCHAR(50) NOT NULL,
-		`password` VARCHAR(100) NOT NULL,
-		`UID` INT(11) UNSIGNED NOT NULL,
-		PRIMARY KEY (`email`),
-		INDEX `FK__memberinfo` (`UID`),
-		CONSTRAINT `FK__memberinfo` FOREIGN KEY (`UID`) REFERENCES `usr_info` (`UID`)
-	)
-	COMMENT='用户登录信息'
-	COLLATE='utf8mb4_0900_ai_ci'
-	ENGINE=InnoDB
-	;
-	```
-
-- usr_login表：用户登录信息
+- user_info表：保存用户的个人信息等
 
 	```sql
-	CREATE TABLE `usr_info` (
+	CREATE TABLE `user_info` (
 		`UID` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '唯一编号',
 		`name` VARCHAR(50) NOT NULL COMMENT '用户名',
 		`avatar` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '头像路径',
@@ -133,6 +144,23 @@ DATABASES = {
 	COLLATE='utf8mb4_0900_ai_ci'
 	ENGINE=InnoDB
 	AUTO_INCREMENT=1
+	;
+	```
+
+- user_login表：用户登录信息
+
+	```sql
+	CREATE TABLE `user_login` (
+		`email` VARCHAR(50) NOT NULL,
+		`password` VARCHAR(100) NOT NULL,
+		`UID` INT(11) UNSIGNED NOT NULL,
+		PRIMARY KEY (`email`),
+		INDEX `FK__memberinfo` (`UID`),
+		CONSTRAINT `FK__memberinfo` FOREIGN KEY (`UID`) REFERENCES `usr_info` (`UID`)
+	)
+	COMMENT='用户登录信息'
+	COLLATE='utf8mb4_0900_ai_ci'
+	ENGINE=InnoDB
 	;
 	```
 
@@ -258,4 +286,117 @@ DATABASES = {
 	ENGINE=InnoDB
 	;
 	```
+
+### 2019-12-15
+
+> 第一个可使用完整版本
+>
+> - 看板主界面完成
+> - 列表卡片创建：创建权限无限制，删除只能管理者
+> - 评论功能：团队管理者和属主可以删除
+> - 附件功能：同上
+>
+> 待完成功能：
+>
+> - 看板&卡片转移
+> - 定时
+> - 忘记密码
+
+#### 看板主界面效果
+
+![](./readmeImgs/board.png)
+
+#### 附件
+
+![](./readmeImgs/attachment.png)
+
+#### 评论
+
+![](./readmeImgs/comment.png)
+
+#### 数据库配置
+
+> 因为看板分为个人和团队 所以之后所有表都分为个人和团队两部分 
+>
+> 下面只列出团队表 个人表只需要将表名第一个字母变为P， 外键配置为相应的个人或者团队表的对应键值
+
+##### 列表
+
+```sql
+CREATE TABLE `t_list` (
+	`LID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(50) NOT NULL,
+	`BID` INT(10) UNSIGNED NOT NULL COMMENT '指向团队看板ID',
+	PRIMARY KEY (`LID`),
+	INDEX `FK__team_board` (`BID`),
+	CONSTRAINT `FK__team_board` FOREIGN KEY (`BID`) REFERENCES `team_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='指向团队看板的列表'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
+##### 卡片
+
+```sql
+CREATE TABLE `t_card` (
+	`CID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`LID` INT(10) UNSIGNED NOT NULL,
+	`name` VARCHAR(50) NOT NULL,
+	`description` VARCHAR(500) NOT NULL DEFAULT '',
+	`due_time` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`CID`),
+	INDEX `FK__t_list` (`LID`),
+	CONSTRAINT `FK__t_list` FOREIGN KEY (`LID`) REFERENCES `t_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='指向团队列表的卡片'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
+##### 附件
+
+```sql
+CREATE TABLE `t_attachment` (
+	`FID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`path` VARCHAR(100) NOT NULL,
+	`CID` INT(10) UNSIGNED NOT NULL,
+	`UID` INT(10) UNSIGNED NOT NULL,
+	PRIMARY KEY (`FID`),
+	INDEX `FK__t_card` (`CID`),
+	INDEX `FK_t_attachment_user_info` (`UID`),
+	CONSTRAINT `FK__t_card` FOREIGN KEY (`CID`) REFERENCES `t_card` (`CID`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_t_attachment_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='团队类型的附件'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
+##### 评论
+
+```sql
+CREATE TABLE `t_comment` (
+	`cm_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`val` VARCHAR(500) NOT NULL,
+	`UID` INT(11) UNSIGNED NOT NULL,
+	`CID` INT(11) UNSIGNED NOT NULL,
+	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`cm_id`),
+	INDEX `FK_t_comment_user_info` (`UID`),
+	INDEX `FK_t_comment_t_card` (`CID`),
+	CONSTRAINT `FK_t_comment_t_card` FOREIGN KEY (`CID`) REFERENCES `t_card` (`CID`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_t_comment_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
 
