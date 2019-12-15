@@ -316,9 +316,11 @@ DATABASES = {
 
 > 因为看板分为个人和团队 所以之后所有表都分为个人和团队两部分 
 >
-> 下面只列出团队表 个人表只需要将表名第一个字母变为P， 外键配置为相应的个人或者团队表的对应键值
+> 个人表只需要将表名第一个字母变为P， 外键配置为相应的个人或者团队表的对应键值
 
 ##### 列表
+
+团队：
 
 ```sql
 CREATE TABLE `t_list` (
@@ -336,7 +338,27 @@ AUTO_INCREMENT=1
 ;
 ```
 
+个人：
+
+```sql
+CREATE TABLE `p_list` (
+	`LID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(50) NOT NULL,
+	`BID` INT(10) UNSIGNED NOT NULL COMMENT '指向personal_board',
+	PRIMARY KEY (`LID`),
+	INDEX `FK__personal_board` (`BID`),
+	CONSTRAINT `FK__personal_board` FOREIGN KEY (`BID`) REFERENCES `personal_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='个人list指向一个PersonBoard'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
 ##### 卡片
+
+团队：
 
 ```sql
 CREATE TABLE `t_card` (
@@ -356,7 +378,29 @@ AUTO_INCREMENT=1
 ;
 ```
 
+个人：
+
+```sql
+CREATE TABLE `p_card` (
+	`CID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR(50) NOT NULL DEFAULT '',
+	`description` VARCHAR(50) NOT NULL DEFAULT '',
+	`LID` INT(10) UNSIGNED NOT NULL,
+	`due_time` TIMESTAMP NULL DEFAULT NULL,
+	PRIMARY KEY (`CID`),
+	INDEX `FK__p_list` (`LID`),
+	CONSTRAINT `FK__p_list` FOREIGN KEY (`LID`) REFERENCES `p_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='指向个人列表的卡片'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
 ##### 附件
+
+团队:
 
 ```sql
 CREATE TABLE `t_attachment` (
@@ -377,7 +421,30 @@ AUTO_INCREMENT=1
 ;
 ```
 
+个人：
+
+```sql
+CREATE TABLE `p_attachment` (
+	`FID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`path` VARCHAR(100) NOT NULL,
+	`CID` INT(10) UNSIGNED NOT NULL,
+	`UID` INT(10) UNSIGNED NOT NULL,
+	PRIMARY KEY (`FID`),
+	INDEX `FK__p_card` (`CID`),
+	INDEX `FK_p_attachment_user_info` (`UID`),
+	CONSTRAINT `FK__p_card` FOREIGN KEY (`CID`) REFERENCES `p_card` (`CID`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_p_attachment_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='附件'
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
 ##### 评论
+
+团队：
 
 ```sql
 CREATE TABLE `t_comment` (
@@ -392,6 +459,28 @@ CREATE TABLE `t_comment` (
 	CONSTRAINT `FK_t_comment_t_card` FOREIGN KEY (`CID`) REFERENCES `t_card` (`CID`) ON UPDATE CASCADE ON DELETE CASCADE,
 	CONSTRAINT `FK_t_comment_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
 )
+COLLATE='utf8mb4_0900_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=1
+;
+```
+
+个人：
+
+```sql
+CREATE TABLE `p_comment` (
+	`cm_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`val` VARCHAR(500) NOT NULL,
+	`UID` INT(10) UNSIGNED NOT NULL,
+	`CID` INT(10) UNSIGNED NOT NULL,
+	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (`cm_id`),
+	INDEX `FK__p_comment_user_info` (`UID`),
+	INDEX `FK__p_comment_p_card` (`CID`),
+	CONSTRAINT `FK__p_comment_p_card` FOREIGN KEY (`CID`) REFERENCES `p_card` (`CID`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK__p_comment_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='个人评论'
 COLLATE='utf8mb4_0900_ai_ci'
 ENGINE=InnoDB
 AUTO_INCREMENT=1
