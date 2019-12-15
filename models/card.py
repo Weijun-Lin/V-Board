@@ -13,21 +13,21 @@ from .sql import *
 
 class P_Card:
     """
-        个人列表
+        个人卡片
     """
     table_name = "p_card"
 
 
 class T_Card:
     """
-        团队列表
+        团队卡片
     """
     table_name = "t_card"
 
 class Card:
     """
         包含上面两个表
-        _card_obj: 看板种类 P_List T_List
+        _card_obj: 看板种类 P_Card T_Card
     """
     cid = "CID" # primary
     name = "name"

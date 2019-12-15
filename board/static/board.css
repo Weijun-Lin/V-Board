@@ -37,3 +37,13 @@ body {
 .board_title {
     max-width: 15rem;
 }
+
+.file {
+    width: 10rem;
+    min-width: 10rem;
+    max-width: 10rem;
+}
+
+.file_name {
+    max-width: 6rem;
+}

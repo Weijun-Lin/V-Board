@@ -22,9 +22,6 @@
     <button type="button" class="btn btn-sm btn-outline-success ml-3 px-2" data-toggle="modal" data-target="#board_info_set">
         <span class="icon-note"></span> 看板信息
     </button>
-    <button type="button" class="btn btn-sm btn-outline-info ml-3 px-2">
-        <span class="icon-people"></span> 更改所属团队
-    </button>
     <button type="button" class="btn btn-sm btn-outline-info ml-3 px-2" id="collapse_lists">
         <span class="icon-arrow-up"></span> 折叠列表
     </button>
@@ -38,7 +35,7 @@
 <!-- 循环渲染列表 -->
 <div class="d-flex flex-row mx-5 my-3 my-1">
     {% for list in lists%}
-    {% include 'list.html' with list=list %}
+    {% include 'list.html' with list=list isowner=isowner %}
     {% endfor %}
     <div class="p-2 pr-5">
     <button class="p-1 btn btn-outline-info add_list" data-toggle="modal" data-target="#add_list" id="add_list_btn">+ 添加另一个列表</button>
@@ -49,7 +46,7 @@
 {% include 'easy_add.html' with id='add_list' placeholder='列表标题' button_name='添加' %}
 {% include 'easy_add.html' with id='add_card' placeholder='卡片标题' button_name='添加' %}
 {% include 'board_info_set.html' with board_info=board_info isowner=isowner %}
-{% include 'card_modal.html' %}
+{% include 'card_modal.html' with avatar_path=avatar_path%}
 
 <script src="{% static 'board.js' %}"></script>
 {% endblock content %}

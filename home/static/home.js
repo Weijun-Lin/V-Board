@@ -66,7 +66,7 @@ $(".home_delete_team").click(function () {
     if(!isdelete) {
         return;
     }
-    url = "/delete/team/?id="+team_block.attr("data-target");
+    url = "/delete/team/?id="+team_block.attr("data-target")+"&kind=1";
     $.get(url,
         function () {
             team_block.remove();

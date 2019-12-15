@@ -1,0 +1,7 @@
+<div class="file d-flex border border-secondary rounded justify-content-between m-2" data-target={{FID}}>
+    <p class="file_name flex-grow-1 pl-2 ellipsis" style="margin: auto;" title="{{name}}"><i> {{name}}</i></p>
+    <a href="{{path}}" download><button class="btn icon-cloud-download px-1 mouse_show_vis"></button></a>
+    {% if isowner %}
+    <button class="transparent border-0 icon-trash px-1 mouse_show_vis delete_color"></button>
+    {% endif %}
+</div>

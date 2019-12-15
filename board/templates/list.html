@@ -8,9 +8,11 @@
               <button type="button" class="icon-menu border-0 transparent" data-toggle="dropdown" style="outline: none;"></button>
               <div class="dropdown-menu">
                 <a class="dropdown-item pointer" href="#collapseExample{{list.info.LID}}" data-toggle="collapse"><span class="icon-arrow-up"></span> 折叠列表</a>
-                <a class="dropdown-item pointer" data-toggle="modal" data-target="#add_card"><span class="icon-plus"></span> 添加卡片</a>
+                <a class="dropdown-item pointer add_card_btn" data-toggle="modal" data-target="#add_card"><span class="icon-plus"></span> 添加卡片</a>
                 <div class="dropdown-divider"></div>
+                {% if isowner %}
                 <a class="dropdown-item pointer delete_list" style="color: #dc3545;"><span class="icon-trash"></span> 删除列表</a>
+                {% endif %}
               </div>
             </div>
       </div>

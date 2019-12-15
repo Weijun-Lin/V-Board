@@ -33,6 +33,7 @@ def home(request:HttpRequest):
             team_info = {}
             team_info["email"] = (models.User_Login.getEmailByUid(i[models.User_Login.uid])[0][models.User_Login.email])
             team_info["name"] = models.User_Info.getRecordByKey(i[models.User_Login.uid])[models.User_Info.name]
+            # print(i[models.User_Login.uid], team_info["name"])
             team_info["uid"] = i[models.User_Login.uid]
             team_info["owner_id"] = models.Team.getRecordsByTid(tid)[0][models.Team.uid]
             teammates.append(team_info)

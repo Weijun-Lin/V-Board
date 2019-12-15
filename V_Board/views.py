@@ -7,6 +7,20 @@ from django.conf import settings
 
 # Create your views here.
 from django.http import *
+import shutil
+
+def helpDeleteFile(_kind, *files_path):
+    type_dir = "person" if _kind == 0 else "team"
+    file_path = os.path.join(settings.BASE_DIR, 'media', 'attachment', type_dir)
+    file_path =  file_path.replace('\\', '/')
+    for mid in files_path:
+        file_path = file_path + "/" + str(mid)
+    print("file_path:", file_path)
+    if os.path.exists(file_path):
+        if len(files_path) == 4:
+            os.remove(file_path)
+        else:
+            shutil.rmtree(file_path)
 
 
 def index(request:HttpRequest):
@@ -150,30 +164,51 @@ def try_board(request:HttpRequest):
 def delete(request:HttpRequest, what:str):
     if not request.session["is_login"]:
         return HttpResponse('')
+    kind = int(request.GET.get("kind"))
     # 删除看板 通过bid
+    board_kind = models.Person_Board if kind == 0 else models.Team_Board
+    list_type = models.P_List if kind == 0 else models.T_List
+    card_type = models.P_Card if kind == 0 else models.T_Card
+    comment_type = models.P_Comment if kind == 0 else models.T_Comment
+    attachment_type = attachment_type = models.P_Attachment if kind == 0 else models.T_Attachment
     if what == "board":
-        kind = int(request.GET.get("kind"))
-        board_kind = models.Person_Board if kind == 0 else models.Team_Board
         bid = int(request.GET.get("id"))
+        helpDeleteFile(kind, *[bid])
         models.Board.deleteByBid(board_kind, bid)
     # 删除团队 通过tid
     elif what == "team":
         tid = int(request.GET.get("id"))
+        bids = models.Board.getBoardsByOwner(board_kind, tid)
+        # 删除团队下所有看板附件
+        for bid in bids:
+            helpDeleteFile(kind, *[bid[models.Team_Board.bid]])
         models.Team.deleteByTid(tid)
     elif what == "teammate":
         uid = int(request.GET.get("uid"))
         tid = int(request.GET.get("tid"))
         models.Team_Member.deleteMember(tid, uid)
     elif what == "list":
-        kind = int(request.GET.get("kind"))
         lid = int(request.GET.get("id"))
-        list_type = models.P_List if kind == 0 else models.T_List
+        bid = models.List.getListByLid(list_type, lid)[0][models.List.bid]
+        helpDeleteFile(kind, *[bid, lid])
         models.List.deleteByLid(list_type, lid)
     elif what == "card":
-        kind = int(request.GET.get("kind"))
         cid = int(request.GET.get("id"))
-        card_type = card_type = models.P_Card if kind == 0 else models.T_Card
+        lid = models.Card.getCardByCid(card_type, cid)[0][models.Card.lid]
+        bid = models.List.getListByLid(list_type, lid)[0][models.List.bid]
+        helpDeleteFile(kind, *[bid, lid, cid])
         models.Card.deleteByCid(card_type, cid)
+    elif what == "file":
+        fid = int(request.GET.get("id"))
+        file_path = models.Attachment.getAttachmentByFid(attachment_type, fid)[0][models.Attachment.path]
+        file_path = file_path.split("/")
+        del file_path[0:3]
+        models.Attachment.deleteByfid(attachment_type, fid)
+        helpDeleteFile(kind, *file_path)
+    elif what == "comment":
+        cm_id = int(request.GET.get("id"))
+        models.Comment.deleteBycm_id(comment_type, cm_id)
+
 
     return HttpResponse('')
 

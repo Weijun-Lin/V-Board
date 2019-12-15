@@ -22,21 +22,32 @@
                         </div>
                     </div>
                     <div class="d-flex flex-column ml-2 border-left pl-2">
-                        <button type="button" class="btn btn-sm btn-outline-warning m-1">
+                        <button type="button" class="btn btn-sm btn-outline-warning m-1" id="move_card">
                             <span class="icon-direction"></span> 移动卡片至
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-info m-1">
+                        <input type="file" style="display: none;" id="upload_file_input">
+                        <button type="button" class="btn btn-sm btn-outline-info m-1" id="upload_file">
                             <span class="icon-cloud-upload"></span> 上传附件
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-success m-1">
                             <span class="icon-clock"></span> 截止日期
                         </button>
+                        {% if isowner %}
                         <button type="button" class="btn btn-sm btn-outline-danger m-1" id="delete_card">
                             <span class="icon-trash"></span> 删除卡片
                         </button>
+                        {% endif %}
                         <button type="button" class="btn btn-sm btn-outline-secondary m-1" data-target="#collapse_comments" data-toggle="collapse" id="fold_comment">
                             <span class="icon-trash"></span> 折叠评论
                         </button>
+                    </div>
+                </div>
+                <p data-target="#collapse_files" data-toggle="collapse"><span class="icon-paper-clip"></span> 附件 <span class="icon-arrow-down"></span></p>
+                <div class="collapse pb-2" id="collapse_files">
+                    <div class="container">
+                        <div class="row">
+                            <!-- 附件 -->
+                        </div>
                     </div>
                 </div>
                 <div class="collapse" id="collapse_comments">
@@ -44,13 +55,13 @@
                         <h5 class="font-weight-bold py-2">评论</h5>
                         <div class="d-flex py-2">
                             <!-- 头像 -->
-                            <img class="img-fluid rounded-circle mr-2 comment_avatar" src="/media/avatar/lzf@qq.com.jpg">
-                            <textarea class="form-control form-control-sm flex-grow-1" placeholder="发表您的评论" style="height: 5rem;"></textarea>
-                            <button type="button" class="btn btn-sm btn-secondary ml-2">发表</button>
+                            <img class="img-fluid rounded-circle mr-2 comment_avatar" src="{{avatar_path}}">
+                            <textarea class="form-control form-control-sm flex-grow-1" placeholder="发表您的评论" style="height: 5rem;" id="comment_text"></textarea>
+                            <button type="button" class="btn btn-sm btn-secondary ml-2" id="upload_comment">发表</button>
                         </div>
-                        {% include 'comment.html' %}
-                        {% include 'comment.html' %}
-                        {% include 'comment.html' %}
+                        <div id="comments">
+
+                        </div>
                     </div>
                 </div>
             </div>

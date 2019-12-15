@@ -1,4 +1,5 @@
 .vscode/
 **/__pycache__/
 /media/avatar/*
+/media/attachment/
 !/media/avatar/default.jpg

@@ -62,7 +62,7 @@ $("#submit_team_set").click(function () {
             if (status == 0) {
                 // 成功重新加载界面
                 alert("团队新建成功")
-                window.location.reload();
+                window.location.href = "/home/"
             } else if (status == 1) {
                 alert("团队名称不能为空");
             } else if (status == 2) {
@@ -274,7 +274,7 @@ $("#submit_board").click(function () {
             if (status == 0) {
                 alert("创建成功")
                 // 刷新
-                window.location.reload();
+                window.location.href = "/board/?id="+data.BID+"&kind="+data.type;
                 return;
             } else if (status == 1) {
                 alert("标题不能为空");
@@ -298,4 +298,11 @@ $(".mouse_show").parent().mouseenter(function () {
     $(this).find(".mouse_show").show();
 }).mouseleave(function () {
     $(this).find(".mouse_show").hide();
+});
+
+$(".mouse_show_vis").css("visibility", "hidden");
+$(".mouse_show_vis").parent().mouseenter(function () {
+    $(this).find(".mouse_show_vis").css("visibility", "visible");
+}).mouseleave(function () {
+    $(this).find(".mouse_show_vis").css("visibility", "hidden");
 });

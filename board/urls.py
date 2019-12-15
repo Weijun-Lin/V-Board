@@ -12,4 +12,6 @@ urlpatterns = [
     path('set_card_desc/', setCardDesc),
     path('add/<str:what>/', addListOrCard),
     path('set_card_name/', setCardName),
+    path('upload_file/<int:bid>/<int:lid>/<int:cid>/<int:kind>/', uploadFile),
+    path('upload_comment/', uploadComment),
 ]
