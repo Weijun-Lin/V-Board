@@ -12,8 +12,6 @@
 
 ## 项目结构
 
-> 暂定
-
 ```
 ├─board # 看板页面
 │  ├─static
@@ -156,7 +154,7 @@ DATABASES = {
 		`UID` INT(11) UNSIGNED NOT NULL,
 		PRIMARY KEY (`email`),
 		INDEX `FK__memberinfo` (`UID`),
-		CONSTRAINT `FK__memberinfo` FOREIGN KEY (`UID`) REFERENCES `usr_info` (`UID`)
+		CONSTRAINT `FK__memberinfo` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`)
 	)
 	COMMENT='用户登录信息'
 	COLLATE='utf8mb4_0900_ai_ci'
