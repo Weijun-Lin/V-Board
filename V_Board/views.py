@@ -81,7 +81,7 @@ def userSet(request:HttpRequest):
         data = json.loads(request.body)
         reponse = {}    # 返回的字典
         # 获取记录
-        login_info = models.User_Login.getRecordByKey(request.session["email"])
+        login_info = models.User_Login.getRecordByKey(request.session["email"])[0]
         user_info = models.User_Info.getRecordByKey(request.session["uid"])
         # 修改昵称 以及 描述
         reponse['nickname'] = data['nickname']

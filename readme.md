@@ -247,23 +247,22 @@ DATABASES = {
 	```sql
 	CREATE TABLE `personal_board` (
 		`BID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '个人看板编号',
-		`name` VARCHAR(50) NOT NULL COMMENT '看板名字',
+		`name` VARCHAR(100) NOT NULL COMMENT '看板名字',
 		`description` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '看板描述',
-		`UID` INT(10) UNSIGNED NOT NULL COMMENT '所有者编号',
+		`UID` INT(11) UNSIGNED NOT NULL COMMENT '所有者编号',
 		`is_public` TINYINT(1) NULL DEFAULT '0',
 		`is_star` TINYINT(1) NULL DEFAULT '0',
-		`time` TIMESTAMP NULL DEFAULT NULL,
 		PRIMARY KEY (`BID`),
 		INDEX `FK__board_usr_info` (`UID`),
 		CONSTRAINT `FK__board_usr_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
 	)
 	COMMENT='personal_board: (BID, name, description, uid)'
-	COLLATE='utf8mb4_0900_ai_ci'
+	COLLATE='utf8_general_ci'
 	ENGINE=InnoDB
 	AUTO_INCREMENT=1
 	;
 	```
-
+	
 4. Team_Board:
 
 	```sql
@@ -274,7 +273,6 @@ DATABASES = {
 		`TID` INT(10) UNSIGNED NOT NULL,
 		`is_public` TINYINT(1) NULL DEFAULT '0',
 		`is_star` TINYINT(1) NULL DEFAULT '0',
-		`time` TIMESTAMP NULL DEFAULT NULL,
 		PRIMARY KEY (`BID`),
 		INDEX `FK__team_board_team` (`TID`),
 		CONSTRAINT `FK__team_board_team` FOREIGN KEY (`TID`) REFERENCES `team` (`TID`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -282,6 +280,7 @@ DATABASES = {
 	COMMENT='团队看板'
 	COLLATE='utf8mb4_0900_ai_ci'
 	ENGINE=InnoDB
+	AUTO_INCREMENT=1
 	;
 	```
 
