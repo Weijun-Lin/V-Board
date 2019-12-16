@@ -35,7 +35,7 @@
 <!-- 循环渲染列表 -->
 <div class="d-flex flex-row mx-5 my-3 my-1">
     {% for list in lists%}
-    {% include 'list.html' with list=list isowner=isowner %}
+    {% include 'list.html' with list=list isowner=list.isowner %}
     {% endfor %}
     <div class="p-2 pr-5">
     <button class="p-1 btn btn-outline-info add_list" data-toggle="modal" data-target="#add_list" id="add_list_btn">+ 添加另一个列表</button>

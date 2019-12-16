@@ -39,11 +39,11 @@ body {
 }
 
 .file {
-    width: 10rem;
-    min-width: 10rem;
-    max-width: 10rem;
+    width: 14rem;
+    min-width: 14rem;
+    max-width: 14rem;
 }
 
 .file_name {
-    max-width: 6rem;
+    max-width: 10rem;
 }

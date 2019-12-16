@@ -7,13 +7,18 @@ import models
 
 # Create your views here.
 
-def isOwner(_bid, _uid, _board_type):
+def isOwner(_tar_id, _uid, _object_type, _type = 0):
     """ 判断是否是创建者 """
-    owner_id = models.Board.getBoardByBid(_board_type, _bid)[0][_board_type.owner_id]
-    if _board_type == models.Person_Board:
-        return _uid == owner_id
-    else:
-        return _uid == models.Team.getRecordsByTid(owner_id)[0][models.Team.uid]
+    if _type == 0:
+        owner_id = models.Board.getBoardByBid(_object_type, _tar_id)[0][_object_type.owner_id]
+        if _object_type == models.Person_Board:
+            return _uid == owner_id
+        else:
+            return _uid == models.Team.getRecordsByTid(owner_id)[0][models.Team.uid]
+    elif _type == 1:
+        return _uid == models.List.getListByLid(_object_type, _tar_id)[0][models.List.uid]
+    elif _type == 2:
+        return _uid == models.Card.getCardByCid(_object_type, _tar_id)[0][models.Card.uid]
 
 def board(request:HttpRequest):
     # 没登陆直接访问 跳转到登陆界面
@@ -46,7 +51,9 @@ def board(request:HttpRequest):
         for lid_dict in lids:
             lid = lid_dict[models.List.lid]
             cards = models.Card.getCardsByLid(card_type, lid) # 字典的列表
-            lists.append({"info":lid_dict, "cards": cards}) # 包含 lid, name 以及 lid 对应的card
+            isowner = isOwner(lid, uid, list_type, 1) or isOwner(bid, uid, board_type)
+            print(lid, isowner)
+            lists.append({"info":lid_dict, "cards": cards, "isowner":isowner}) # 包含 lid, name 以及 lid 对应的card
 
         # 判断是否为 owner
         isowner = isOwner(bid, uid, board_type)
@@ -132,6 +139,7 @@ def boardSet(request:HttpRequest):
 def getInfo(request:HttpRequest, what):
     """ 获取信息 """
     if request.method == "GET":
+        uid = request.session["uid"]
         tar_id = int(request.GET.get("id"))
         kind = int(request.GET.get("kind"))
         board_type = models.Person_Board if kind == 0 else models.Team_Board
@@ -145,12 +153,15 @@ def getInfo(request:HttpRequest, what):
             return JsonResponse(models.List.getListByLid(list_type, tar_id)[0])
         elif what == "card":
             bid = int(request.GET.get("bid"))
-            isleader = isOwner(bid, request.session["uid"], board_type)
+            lid = int(request.GET.get("lid"))
+            isleader = isOwner(bid, uid, board_type) or isOwner(lid, uid, list_type, 1)
             response = {"card":models.Card.getCardByCid(card_type, tar_id)[0]}
             response["files"] = []
+            response["isowner"] = isleader or isOwner(tar_id, uid, 2)
             for f in models.Attachment.getAttachmentsByCid(attachment_type, tar_id):
                 FID = f[models.Attachment.fid]
                 name = f[models.Attachment.path].split("/")[-1]
+                path = f[models.Attachment.path]
                 isowner = isleader or request.session["uid"] == f[models.Attachment.uid]
                 response["files"].append(str(render(request, "file.html", locals()).content, "utf-8"))
             response["comments"] = []
@@ -224,6 +235,7 @@ def setCardName(request:HttpRequest):
         
 
 def addListOrCard(request:HttpRequest, what):
+    uid = request.session["uid"]
     reponse = {}    # 返回的字典
     data = json.loads(request.body)
     kind = int(data["kind"])   
@@ -234,7 +246,7 @@ def addListOrCard(request:HttpRequest, what):
             bid = int(data["bid"])
             status = isLegalName(list_type, name, -1, bid)
             if status == 0:
-                models.List.insert(list_type, bid, name)
+                models.List.insert(list_type, bid, name, uid)
             reponse["status"] = status
             # 改为直接刷新
             # context = {"list":{"info":{"name":name, "LID":models.List.getLast(list_type)[models.List.lid]}}}
@@ -245,7 +257,7 @@ def addListOrCard(request:HttpRequest, what):
             lid = int(data["lid"])
             status = isLegalName(card_type, name, -1, lid)
             if status == 0:
-                models.Card.insert(card_type, lid, name)
+                models.Card.insert(card_type, lid, name, uid)
             reponse["status"] = status
     return JsonResponse(reponse)
 
@@ -283,6 +295,7 @@ def uploadFile(request:HttpRequest, bid, lid, cid, kind):
             f = models.Attachment.getLast(attachment_type)
             FID = f[models.Attachment.fid]
             name = f[models.Attachment.path].split("/")[-1]
+            path = f[models.Attachment.path]
             isowner = True
             response["file"] = str(render(request, "file.html", locals()).content, "utf-8")
         response["status"] = status

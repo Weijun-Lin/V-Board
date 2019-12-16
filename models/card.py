@@ -33,6 +33,7 @@ class Card:
     name = "name"
     desc = "description"
     lid = "LID" # foreign
+    uid = "UID" # foreign
     due_time = "due_time"
 
     @staticmethod
@@ -40,9 +41,9 @@ class Card:
         return getTuplesByEqualCond(_card_obj.table_name, [Card.lid], [_lid])
 
     @staticmethod
-    def insert(_card_obj, _lid, _name, _desc=""):
-        values = "{},'{}','{}'".format(_lid, _name, _desc)
-        keys = "{},{},{}".format(Card.lid, Card.name, Card.desc)
+    def insert(_card_obj, _lid, _name, _uid, _desc=""):
+        values = "{},'{}',{},'{}'".format(_lid, _name, _uid, _desc)
+        keys = "{},{},{},{}".format(Card.lid, Card.name, Card.uid, Card.desc)
         sql_insert(_card_obj.table_name, values, keys)
 
     @staticmethod

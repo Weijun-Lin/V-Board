@@ -63,15 +63,14 @@ $("#submit_board_info").click(function () {
 
 // 用户修改了但是没有上传，需要恢复到原始状态
 // 监听模态框隐藏事件
-$(function () {
-    url = "/board/get_info/board/?id="+$("#board_top").attr("data-target")+"&kind="+$("#board_top").attr("data-type");    
-    $("#board_info_set").on('hidden.bs.modal', function () {
-        $.get(url, function (data) {
-            $("#board_info_set_name").val(data.name);
-            $("#board_info_set_desc").val(data.description);
-        })
+url = "/board/get_info/board/?id="+$("#board_top").attr("data-target")+"&kind="+$("#board_top").attr("data-type");    
+$("#board_info_set").on('hidden.bs.modal', function () {
+    $.get(url, function (data) {
+        console.log(data)
+        $("#board_info_set_name").val(data.name);
+        $("#board_info_set_desc").val(data.description);
     })
-});
+})
 
 // ---------------------------------------- 删除看板 ------------------------------------
 // 删除之后重定向至首页
@@ -292,7 +291,8 @@ $(".delete_list").click(function () {
 $(".btn_card_modal").click(function () {
     cid = $(this).parents(".list_card").attr("data-target");
     kind = $("#board_top").attr("data-type");
-    url = "/board/get_info/card/"+"?id="+cid+"&kind="+kind+"&bid="+$("#board_top").attr("data-target");
+    lid = $(this).parents(".list").attr("data-target");
+    url = "/board/get_info/card/"+"?id="+cid+"&kind="+kind+"&bid="+$("#board_top").attr("data-target")+"&lid="+lid;
     $.get(url, function (data) {
         console.log(data);
         card_modal = $("#card_modal");
@@ -321,6 +321,12 @@ $(".btn_card_modal").click(function () {
         });
         delete_file();
         delete_comments();
+        if(data["isowner"]) {
+            $("#delete_card").show();
+        }
+        else {
+            $("#delete_card").hide();
+        }
     })
 })
 

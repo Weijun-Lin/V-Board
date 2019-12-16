@@ -33,6 +33,7 @@ class List:
     lid = "LID" # primary
     name = "name"
     bid = "BID" # foreign
+    uid = "UID" # foreign
 
     @staticmethod
     def getListsByBid(_list_obj, _bid):
@@ -43,9 +44,9 @@ class List:
         return getTuplesByEqualCond(_list_obj.table_name, [List.lid], [_lid])
 
     @staticmethod
-    def insert(_list_obj, _bid, _name):
-        values = "{}, '{}'".format(_bid, _name)
-        keys = "{},{}".format(List.bid, List.name)
+    def insert(_list_obj, _bid, _name, _uid):
+        values = "{}, '{}', {}".format(_bid, _name, _uid)
+        keys = "{},{},{}".format(List.bid, List.name, List.uid)
         sql_insert(_list_obj.table_name, values, keys)
 
     @staticmethod
