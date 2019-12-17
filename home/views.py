@@ -46,7 +46,7 @@ def home(request:HttpRequest):
         teams_boards.append(team)
 
     # 获取用户信息
-    login_info = models.User_Login.getRecordByKey(request.session["email"])
+    login_info = models.User_Login.getRecordByKey(request.session["email"])[0]
     user_info = models.User_Info.getRecordByKey(uid)
 
     # 获取用户名

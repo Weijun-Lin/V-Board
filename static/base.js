@@ -165,6 +165,7 @@ $("#button_avatar").click(function () {
                 }
             },
             success: function (data, status) {
+                // alert(data)
                 button_avatar = true;
                 $(".avatar").attr('src', data);
                 // 重新置为空字符串
@@ -217,6 +218,8 @@ $("#submit_usr_set").click(function () {
                 alert("密码不一致 请重新输入");
             } else if (status == 4) {
                 // 不是修改密码
+                alert("修改成功");
+                window.location.reload();
             }
         },
         error: function () {

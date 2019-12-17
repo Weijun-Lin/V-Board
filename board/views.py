@@ -60,7 +60,7 @@ def board(request:HttpRequest):
         # if kind == 0 and owner_id == 
         # 以下信息同 home.view 构建导航栏所需要的信息
         # 获取用户信息
-        login_info = models.User_Login.getRecordByKey(request.session["email"])
+        login_info = models.User_Login.getRecordByKey(request.session["email"])[0]
         user_info = models.User_Info.getRecordByKey(uid)
 
         # 获取用户名
@@ -157,7 +157,7 @@ def getInfo(request:HttpRequest, what):
             isleader = isOwner(bid, uid, board_type) or isOwner(lid, uid, list_type, 1)
             response = {"card":models.Card.getCardByCid(card_type, tar_id)[0]}
             response["files"] = []
-            response["isowner"] = isleader or isOwner(tar_id, uid, 2)
+            response["isowner"] = isleader or isOwner(tar_id, uid, card_type, 2)
             for f in models.Attachment.getAttachmentsByCid(attachment_type, tar_id):
                 FID = f[models.Attachment.fid]
                 name = f[models.Attachment.path].split("/")[-1]

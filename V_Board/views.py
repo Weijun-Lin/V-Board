@@ -39,7 +39,8 @@ def setAvatar(request:HttpRequest):
         avatar_path.close()
 
         avatar_path = "/media/avatar/{}.jpg".format(request.session['email'])
-        models.User_Info.update(request.session["uid"], "Joke-Lin", avatar_path ,"")
+        name = models.User_Info.getRecordByKey(request.session["uid"])[models.User_Info.name]
+        models.User_Info.update(request.session["uid"], name, avatar_path ,"")
         return HttpResponse(avatar_path)
 
 
