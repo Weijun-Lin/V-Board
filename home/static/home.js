@@ -120,7 +120,7 @@ $(".teammate_list").find("button.icon-close").click(function () {
 
     uid = teammate_list.find("p").attr("data-target");
     tid = teammate_list.parents(".team_block").attr("data-target");
-    url = "/delete/teammate/?uid="+uid+"&tid="+tid;
+    url = "/delete/teammate/?uid="+uid+"&tid="+tid+"&kind=1";
     $.get(url,
         function () {
             window.location.reload();
