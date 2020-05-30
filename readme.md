@@ -8,7 +8,7 @@
 
 ​	V-Board看板是由装满卡片、由你和你的团队使用的各种列表的列表。他核心要素也就只有看板、列表、卡片这三者。从这三个最基础的组件派生出许多有趣且实用的功能。符合大多数用户不同的需求。从个人的日程管理，记录生活琐事，工作计划到团队的项目开发，团队合作都可以提供一种简单有效的管理和记录方式。可以私用或者公用，不论是用作团队协作的进度展示，还是日程管理，V-board都可以完成。
 
-[在线预览（预览最新版本）]( http://101.37.173.44:8000/ )
+[在线预览（预览最新版本）]( https://ecs.joke-lin.top:8000/ )
 
 ## 项目结构
 
@@ -36,6 +36,8 @@
 └─V_Board
     ├─static
     ├─templates
+├─v_board.conf # nginx 配置文件
+└─v_board.ini  # uwsgi 配置文件
 ```
 
 ## 开发日志
@@ -247,22 +249,23 @@ DATABASES = {
 	```sql
 	CREATE TABLE `personal_board` (
 		`BID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '个人看板编号',
-		`name` VARCHAR(100) NOT NULL COMMENT '看板名字',
+		`name` VARCHAR(50) NOT NULL COMMENT '看板名字',
 		`description` VARCHAR(500) NOT NULL DEFAULT '' COMMENT '看板描述',
-		`UID` INT(11) UNSIGNED NOT NULL COMMENT '所有者编号',
+		`UID` INT(10) UNSIGNED NOT NULL COMMENT '所有者编号',
 		`is_public` TINYINT(1) NULL DEFAULT '0',
 		`is_star` TINYINT(1) NULL DEFAULT '0',
+		`time` TIMESTAMP NULL DEFAULT NULL,
 		PRIMARY KEY (`BID`),
 		INDEX `FK__board_usr_info` (`UID`),
 		CONSTRAINT `FK__board_usr_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
 	)
 	COMMENT='personal_board: (BID, name, description, uid)'
-	COLLATE='utf8_general_ci'
+	COLLATE='utf8mb4_0900_ai_ci'
 	ENGINE=InnoDB
 	AUTO_INCREMENT=1
 	;
 	```
-	
+
 4. Team_Board:
 
 	```sql
@@ -273,6 +276,7 @@ DATABASES = {
 		`TID` INT(10) UNSIGNED NOT NULL,
 		`is_public` TINYINT(1) NULL DEFAULT '0',
 		`is_star` TINYINT(1) NULL DEFAULT '0',
+		`time` TIMESTAMP NULL DEFAULT NULL,
 		PRIMARY KEY (`BID`),
 		INDEX `FK__team_board_team` (`TID`),
 		CONSTRAINT `FK__team_board_team` FOREIGN KEY (`TID`) REFERENCES `team` (`TID`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -280,7 +284,6 @@ DATABASES = {
 	COMMENT='团队看板'
 	COLLATE='utf8mb4_0900_ai_ci'
 	ENGINE=InnoDB
-	AUTO_INCREMENT=1
 	;
 	```
 
@@ -289,21 +292,15 @@ DATABASES = {
 > 第一个可使用完整版本
 >
 > - 看板主界面完成
-> - 列表卡片创建：创建权限无限制，删除创建者和上级创建者可以删除
+> - 列表卡片创建：创建权限无限制，删除只能管理者
 > - 评论功能：团队管理者和属主可以删除
 > - 附件功能：同上
 >
 > 待完成功能：
 >
-> 参考 trello 官网
->
 > - 看板&卡片转移
-> - 定时提醒功能
+> - 定时
 > - 忘记密码
-> - 搜索
-> - 看板预览界面
-> - 个人主页
-> - 关注者等
 
 #### 看板主界面效果
 
@@ -332,12 +329,9 @@ CREATE TABLE `t_list` (
 	`LID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(50) NOT NULL,
 	`BID` INT(10) UNSIGNED NOT NULL COMMENT '指向团队看板ID',
-	`UID` INT(10) UNSIGNED NOT NULL,
 	PRIMARY KEY (`LID`),
 	INDEX `FK__team_board` (`BID`),
-	INDEX `FK_t_list_user_info` (`UID`),
-	CONSTRAINT `FK__team_board` FOREIGN KEY (`BID`) REFERENCES `team_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT `FK_t_list_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `FK__team_board` FOREIGN KEY (`BID`) REFERENCES `team_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE
 )
 COMMENT='指向团队看板的列表'
 COLLATE='utf8mb4_0900_ai_ci'
@@ -353,12 +347,9 @@ CREATE TABLE `p_list` (
 	`LID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	`name` VARCHAR(50) NOT NULL,
 	`BID` INT(10) UNSIGNED NOT NULL COMMENT '指向personal_board',
-	`UID` INT(10) UNSIGNED NOT NULL,
 	PRIMARY KEY (`LID`),
 	INDEX `FK__personal_board` (`BID`),
-	INDEX `FK_p_list_user_info` (`UID`),
-	CONSTRAINT `FK__personal_board` FOREIGN KEY (`BID`) REFERENCES `personal_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT `FK_p_list_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `FK__personal_board` FOREIGN KEY (`BID`) REFERENCES `personal_board` (`BID`) ON UPDATE CASCADE ON DELETE CASCADE
 )
 COMMENT='个人list指向一个PersonBoard'
 COLLATE='utf8mb4_0900_ai_ci'
@@ -378,12 +369,9 @@ CREATE TABLE `t_card` (
 	`name` VARCHAR(50) NOT NULL,
 	`description` VARCHAR(500) NOT NULL DEFAULT '',
 	`due_time` TIMESTAMP NULL DEFAULT NULL,
-	`UID` INT(10) UNSIGNED NOT NULL,
 	PRIMARY KEY (`CID`),
 	INDEX `FK__t_list` (`LID`),
-	INDEX `FK_t_card_user_info` (`UID`),
-	CONSTRAINT `FK__t_list` FOREIGN KEY (`LID`) REFERENCES `t_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT `FK_t_card_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `FK__t_list` FOREIGN KEY (`LID`) REFERENCES `t_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE
 )
 COMMENT='指向团队列表的卡片'
 COLLATE='utf8mb4_0900_ai_ci'
@@ -401,12 +389,9 @@ CREATE TABLE `p_card` (
 	`description` VARCHAR(50) NOT NULL DEFAULT '',
 	`LID` INT(10) UNSIGNED NOT NULL,
 	`due_time` TIMESTAMP NULL DEFAULT NULL,
-	`UID` INT(10) UNSIGNED NOT NULL,
 	PRIMARY KEY (`CID`),
 	INDEX `FK__p_list` (`LID`),
-	INDEX `FK_p_card_user_info` (`UID`),
-	CONSTRAINT `FK__p_list` FOREIGN KEY (`LID`) REFERENCES `p_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT `FK_p_card_user_info` FOREIGN KEY (`UID`) REFERENCES `user_info` (`UID`) ON UPDATE CASCADE ON DELETE CASCADE
+	CONSTRAINT `FK__p_list` FOREIGN KEY (`LID`) REFERENCES `p_list` (`LID`) ON UPDATE CASCADE ON DELETE CASCADE
 )
 COMMENT='指向个人列表的卡片'
 COLLATE='utf8mb4_0900_ai_ci'
@@ -504,3 +489,179 @@ AUTO_INCREMENT=1
 ;
 ```
 
+## 初步部署
+
+### django 部署准备
+
+1. 关闭Debug模式
+2. 设置`STATIC_ROOT = '/srv/django/static'`，执行`python manage.py collectstatic`导出静态文件
+
+#### UWSGI配置
+
+参考：[直接使用uWSGI来运行Django](https://note.qidong.name/2017/07/06/uwsgi-serve-django/)，[解决uWSGI里的Django静态文件丢失](https://note.qidong.name/2017/07/uwsgi-serve-django-static/)
+
+熟悉UWSGI后，便可以进入nginx配置
+
+#### NGINX配置
+
+参考：[uWSGI+django+nginx的工作原理流程与部署历程](https://blog.csdn.net/c465869935/article/details/53242126?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1.nonecase)
+
+#### 配置文件
+
+1. v_board.ini uwsgi配置文件
+
+	```ini
+	[uwsgi]
+	socket = 127.0.0.1:9090
+	chdir=/home/Joke-Lin/repos/V_Board/
+	wsgi-file = /home/Joke-Lin/repos/V_Board/V_Board/wsgi.py
+	master = true         
+	processes=2
+	threads=2
+	max-requests=2000
+	chmod-socket=664
+	vacuum=true
+	daemonize = /home/Joke-Lin/repos/V_Board/uwsgi.log
+	```
+
+2. v_board.conf nginx 配置文件
+
+	```conf
+	
+	user  root;
+	worker_processes  1;
+	
+	#error_log  logs/error.log;
+	#error_log  logs/error.log  notice;
+	#error_log  logs/error.log  info;
+	
+	#pid        logs/nginx.pid;
+	
+	
+	events {
+	    worker_connections  1024;
+	}
+	
+	
+	http {
+	    include       mime.types;
+	    default_type  application/octet-stream;
+	
+	    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+	    #                  '$status $body_bytes_sent "$http_referer" '
+	    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+	
+	    #access_log  logs/access.log  main;
+	
+	    sendfile        on;
+	    #tcp_nopush     on;
+	
+	    #keepalive_timeout  0;
+	    keepalive_timeout  65;
+	
+	    #gzip  on;
+	    # server {
+	    #     listen 8000;
+	    #     server_name localhost;
+	    #     charset     utf-8;
+	    #     access_log      /home/Joke-Lin/repos/V_Board/nginx_access.log;
+	    #     error_log       /home/Joke-Lin/repos/V_Board/nginx_error.log;
+	    #     client_max_body_size 75M;
+	
+	
+	    #     location /static {
+	    #         alias /srv/django/static;
+	    #     }
+	    
+	    #     location /media {
+	    #         alias /home/Joke-Lin/repos/V_Board/media;
+	    #     }
+	
+	    #     location / {
+	    #         include     /usr/local/nginx/conf/uwsgi_params;
+	    #         uwsgi_pass  127.0.0.1:9090;
+	    #    }
+	    # }
+	    server {
+	        listen 80;
+	        server_name ecs.joke-lin.top;
+	        return 301 https://ecs.joke-lin.top$request_uri;
+	    }
+	    server {
+	        listen 8000 ssl;
+	        server_name ecs.joke-lin.top;
+	        ssl_certificate         /SSL/ecs.joke-lin.top_chain.crt;
+	        ssl_certificate_key     /SSL/ecs.joke-lin.top_key.key;
+	        charset     utf-8;
+	        access_log      /home/Joke-Lin/repos/V_Board/nginx_access.log;
+	        error_log       /home/Joke-Lin/repos/V_Board/nginx_error.log;
+	        client_max_body_size 75M;
+	
+	        location /static {
+	            alias /srv/django/static;
+	        }
+	    
+	        location /media {
+	            alias /home/Joke-Lin/repos/V_Board/media;
+	        }
+	
+	        location / {
+	            include     /usr/local/nginx/conf/uwsgi_params;
+	            uwsgi_pass  127.0.0.1:9090;
+	       }
+	    }
+	
+	    # another virtual host using mix of IP-, name-, and port-based configuration
+	    #
+	    #server {
+	    #    listen       8000;
+	    #    listen       somename:8080;
+	    #    server_name  somename  alias  another.alias;
+	
+	    #    location / {
+	    #        root   html;
+	    #        index  index.html index.htm;
+	    #    }
+	    #}
+	
+	
+	    # HTTPS server
+	    #
+	    #server {
+	    #    listen       443 ssl;
+	    #    server_name  localhost;
+	
+	    #    ssl_certificate      cert.pem;
+	    #    ssl_certificate_key  cert.key;
+	
+	    #    ssl_session_cache    shared:SSL:1m;
+	    #    ssl_session_timeout  5m;
+	
+	    #    ssl_ciphers  HIGH:!aNULL:!MD5;
+	    #    ssl_prefer_server_ciphers  on;
+	
+	    #    location / {
+	    #        root   html;
+	    #        index  index.html index.htm;
+	    #    }
+	    #}
+	}
+	```
+
+	#### HTTPS
+
+	HTTPS只需要申请对应的证书即可，配置见上配置文件：
+
+	```
+	listen 8000 ssl;
+	server_name ecs.joke-lin.top;
+	ssl_certificate         /SSL/ecs.joke-lin.top_chain.crt; # 证书
+	ssl_certificate_key     /SSL/ecs.joke-lin.top_key.key;   # 钥匙
+	```
+
+	#### 坑点
+
+	1. NGINX版本要最新的，老版本会出现HTTPS的问题
+	2. HTTP定向到HTTPS有错误。。
+	3. 用默认端口443可能会被过滤（备案）
+	4. 注意nginx的媒体文件的路径设置，并且给予访问权限

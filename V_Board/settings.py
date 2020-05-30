@@ -126,7 +126,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
-
+# web服务器配置的静态资源目录
+STATIC_ROOT = '/srv/django/static'
 # APP下的静态文件位置
 STATIC_URL = '/static/'
 # 全局静态文件位置
